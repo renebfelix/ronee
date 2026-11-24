@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
-import { NAVIGATION, type NavItem } from "@/config/navigation";
+import { NAVIGATION, getNavItemTarget, isRouteActive, type NavItem } from "@/config/navigation";
 import { cn } from "@/lib/utils/cn";
 import { Badge, IconButton, Logo } from "@/components/ui";
 import styles from "./Sidebar.module.scss";
@@ -14,7 +14,11 @@ export interface SidebarProps {
   onClose: () => void;
 }
 
-function NavLink({ item, active, onNavigate }: { item: NavItem; active: boolean; onNavigate: () => void }) {
+function NavLink({ item, pathname, onNavigate }: { item: NavItem; pathname: string; onNavigate: () => void }) {
+  const inSection = isRouteActive(pathname, item.href);
+  const hasChildren = !!item.children?.length;
+  // Com submenu, o destaque forte vai para a subpágina; o módulo só indica a seção atual.
+  const active = inSection && !hasChildren;
   const Icon = item.icon;
   const content = (
     <>
@@ -35,14 +39,37 @@ function NavLink({ item, active, onNavigate }: { item: NavItem; active: boolean;
   }
 
   return (
-    <Link
-      href={item.href}
-      className={cn(styles.link, active && styles.active)}
-      aria-current={active ? "page" : undefined}
-      onClick={onNavigate}
-    >
-      {content}
-    </Link>
+    <>
+      <Link
+        href={getNavItemTarget(item)}
+        className={cn(styles.link, active && styles.active, hasChildren && inSection && styles.sectionActive)}
+        aria-current={active ? "page" : undefined}
+        aria-expanded={hasChildren ? inSection : undefined}
+        onClick={onNavigate}
+      >
+        {content}
+      </Link>
+
+      {hasChildren && inSection && (
+        <ul className={styles.subList}>
+          {item.children!.map((child) => {
+            const childActive = isRouteActive(pathname, child.href);
+            return (
+              <li key={child.id}>
+                <Link
+                  href={child.href}
+                  className={cn(styles.subLink, childActive && styles.subActive)}
+                  aria-current={childActive ? "page" : undefined}
+                  onClick={onNavigate}
+                >
+                  {child.label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </>
   );
 }
 
@@ -65,11 +92,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
               <ul className={styles.list}>
                 {section.items.map((item) => (
                   <li key={item.id}>
-                    <NavLink
-                      item={item}
-                      active={pathname === item.href || pathname.startsWith(`${item.href}/`)}
-                      onNavigate={onClose}
-                    />
+                    <NavLink item={item} pathname={pathname} onNavigate={onClose} />
                   </li>
                 ))}
               </ul>

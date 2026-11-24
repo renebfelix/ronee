@@ -1,0 +1,264 @@
+@use "abstracts" as *;
+
+.muted {
+  color: var(--color-text-muted);
+  font-size: $font-sm;
+}
+
+.title {
+  font-weight: $weight-semibold;
+  color: var(--color-text);
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-1;
+}
+
+.money {
+  font-weight: $weight-bold;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.moneyIn {
+  color: var(--color-success);
+}
+
+.moneyOut {
+  color: var(--color-danger);
+}
+
+.avatars {
+  display: inline-flex;
+
+  > * + * {
+    margin-left: -8px;
+  }
+
+  > * {
+    box-shadow: 0 0 0 2px var(--color-surface);
+  }
+}
+
+.dot {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: $radius-full;
+}
+
+.method {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  white-space: nowrap;
+}
+
+// Tabela
+.tableWrap {
+  overflow-x: auto;
+  margin: 0 (-$space-2);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $font-sm;
+
+  th,
+  td {
+    padding: $space-3 $space-3;
+    text-align: left;
+    vertical-align: middle;
+
+    &:first-child {
+      padding-left: $space-2;
+    }
+
+    &:last-child {
+      padding-right: $space-2;
+    }
+  }
+
+  th {
+    font-size: $font-xs;
+    font-weight: $weight-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-subtle);
+    white-space: nowrap;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--color-border);
+    @include transition(background-color);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: var(--color-surface-2);
+    }
+  }
+}
+
+.num {
+  text-align: right !important;
+}
+
+.thSort {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+
+  &:hover {
+    color: var(--color-text);
+  }
+}
+
+.thSortActive {
+  color: var(--color-primary);
+}
+
+.txCell {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  min-width: 220px;
+}
+
+.txText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+// Verificação
+.checkCol {
+  width: 40px;
+}
+
+.check {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-success);
+  cursor: pointer;
+}
+
+.verify {
+  cursor: pointer;
+}
+
+.isChecked {
+  background: var(--color-success-soft) !important;
+}
+
+// Lista em cards (telas pequenas)
+.cards {
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  padding: $space-3 0;
+  border-bottom: 1px solid var(--color-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &.verify {
+    margin: 0 (-$space-2);
+    padding-inline: $space-2;
+    border-radius: $radius-md;
+  }
+
+  .check {
+    margin-top: 10px;
+  }
+}
+
+.cardMain {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cardSide {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: $space-2;
+}
+
+// Menu de ações
+.menuCell {
+  display: inline-flex;
+  justify-content: flex-end;
+}
+
+.menuBtn {
+  @include flex-center;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-sm;
+  color: var(--color-text-muted);
+
+  &:hover,
+  &[aria-expanded="true"] {
+    background: var(--color-surface-2);
+    color: var(--color-text);
+  }
+}
+
+.menu {
+  position: fixed;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  padding: $space-1;
+  @include surface;
+  box-shadow: var(--shadow-lg);
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-3;
+  border-radius: $radius-sm;
+  font-size: $font-sm;
+  color: var(--color-text);
+  text-align: left;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--color-surface-2);
+    outline: none;
+  }
+}
+
+.menuDanger {
+  color: var(--color-danger);
+}

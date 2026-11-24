@@ -1,0 +1,71 @@
+@use "abstracts" as *;
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--overlay);
+
+  @include up(sm) {
+    align-items: center;
+    padding: $space-6;
+  }
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 92dvh;
+  background: var(--color-surface);
+  border-radius: $radius-xl $radius-xl 0 0;
+  box-shadow: var(--shadow-lg);
+
+  @include up(sm) {
+    border-radius: $radius-xl;
+  }
+}
+
+.md {
+  @include up(sm) {
+    max-width: 480px;
+  }
+}
+
+.lg {
+  @include up(sm) {
+    max-width: 720px;
+  }
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+  padding: $space-4 $space-5;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.title {
+  font-size: $font-lg;
+  font-weight: $weight-semibold;
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: $space-5;
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: $space-2;
+  padding: $space-4 $space-5;
+  border-top: 1px solid var(--color-border);
+}

@@ -1,0 +1,236 @@
+@use "abstracts" as *;
+
+// Controles de formulário do módulo de Finanças (mesmo visual do Input da plataforma).
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  min-width: 0;
+}
+
+.label {
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+  color: var(--color-text);
+}
+
+.hint {
+  font-size: $font-xs;
+  color: var(--color-text-muted);
+}
+
+.hintWarn {
+  color: var(--color-warning);
+  font-weight: $weight-medium;
+}
+
+.error {
+  font-size: $font-sm;
+  color: var(--color-danger);
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 0 $space-3;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  font-size: $font-md; // 16px evita zoom automático no iOS
+  color: var(--color-text);
+  outline: none;
+  @include transition(border-color, box-shadow);
+
+  &::placeholder {
+    color: var(--color-text-subtle);
+  }
+
+  &:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-soft);
+  }
+}
+
+.input,
+.select {
+  height: 44px;
+}
+
+.select {
+  cursor: pointer;
+}
+
+.textarea {
+  padding: $space-3;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.stackTight {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.grid2 {
+  display: grid;
+  gap: $space-4;
+
+  @include up(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+// Seletor segmentado
+.seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  background: var(--color-surface-2);
+  border-radius: $radius-md;
+  max-width: 100%;
+}
+
+.segBtn {
+  flex: 1 0 auto;
+  padding: 6px $space-3;
+  border-radius: calc(#{$radius-md} - 3px);
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  @include transition(background-color, color);
+
+  &:hover {
+    color: var(--color-text);
+  }
+}
+
+.segOn {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+
+.monthpicker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-1;
+  height: 44px;
+  padding: 0 $space-1;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+
+  strong {
+    min-width: 132px;
+    text-align: center;
+    font-size: $font-sm;
+  }
+}
+
+// Chips de pessoas
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: 4px $space-3 4px 4px;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-full;
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+  color: var(--color-text-muted);
+  @include transition(background-color, border-color, color);
+
+  &:hover {
+    border-color: var(--color-primary);
+  }
+}
+
+.chipOn {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+// Divisão por valores diferentes
+.splitList {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.splitRow {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+}
+
+.splitName {
+  flex: 1;
+  min-width: 0;
+  font-size: $font-sm;
+  @include truncate;
+}
+
+.splitInput {
+  width: 130px;
+  flex-shrink: 0;
+}
+
+// Aparência (cor e ícone)
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: $radius-full;
+  border: 3px solid transparent;
+  box-shadow: inset 0 0 0 2px var(--color-surface);
+}
+
+.swatchOn {
+  border-color: var(--color-text);
+}
+
+.iconpick {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+  gap: $space-2;
+}
+
+.iconpickBtn {
+  @include flex-center;
+  height: 38px;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-sm;
+  color: var(--color-text-muted);
+
+  &:hover {
+    color: var(--color-text);
+  }
+}
+
+.iconpickOn {
+  border-width: 2px;
+}

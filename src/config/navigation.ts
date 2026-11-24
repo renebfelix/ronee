@@ -1,20 +1,32 @@
 import {
   Apple,
+  ArrowLeftRight,
   Bell,
   BellRing,
   CalendarDays,
+  CreditCard,
   Dumbbell,
   HeartPulse,
   House,
+  Landmark,
   LayoutDashboard,
   Package,
   Settings,
   ShoppingCart,
+  Tags,
+  Users,
   Wallet,
   type LucideIcon,
 } from "lucide-react";
 
 export type AccentColor = "primary" | "success" | "warning" | "danger" | "info";
+
+export interface NavSubItem {
+  id: string;
+  label: string;
+  href: string;
+  icon: LucideIcon;
+}
 
 export interface NavItem {
   id: string;
@@ -24,6 +36,11 @@ export interface NavItem {
   accent: AccentColor;
   /** Módulo ainda não implementado: aparece desabilitado com selo "Em breve". */
   comingSoon?: boolean;
+  /**
+   * Páginas internas do módulo. A primeira é a página principal (aberta ao clicar no módulo).
+   * O submenu fica expandido enquanto a rota atual estiver dentro de `href`.
+   */
+  children?: NavSubItem[];
 }
 
 export interface NavSection {
@@ -42,7 +59,20 @@ export const NAVIGATION: NavSection[] = [
   {
     title: "Organização",
     items: [
-      { id: "finance", label: "Finanças", href: "/financas", icon: Wallet, accent: "success", comingSoon: true },
+      {
+        id: "finance",
+        label: "Finanças",
+        href: "/financas",
+        icon: Wallet,
+        accent: "success",
+        children: [
+          { id: "finance-transactions", label: "Lançamentos", href: "/financas/lancamentos", icon: ArrowLeftRight },
+          { id: "finance-categories", label: "Categorias", href: "/financas/categorias", icon: Tags },
+          { id: "finance-owners", label: "Responsáveis", href: "/financas/responsaveis", icon: Users },
+          { id: "finance-cards", label: "Cartões", href: "/financas/cartoes", icon: CreditCard },
+          { id: "finance-banks", label: "Bancos", href: "/financas/bancos", icon: Landmark },
+        ],
+      },
       { id: "chores", label: "Tarefas de casa", href: "/tarefas", icon: House, accent: "warning", comingSoon: true },
       { id: "calendar", label: "Agenda", href: "/agenda", icon: CalendarDays, accent: "info", comingSoon: true },
       { id: "reminders", label: "Lembretes", href: "/lembretes", icon: BellRing, accent: "danger", comingSoon: true },
@@ -71,6 +101,27 @@ export const NAVIGATION: NavSection[] = [
     ],
   },
 ];
+
+/** A rota atual é `href` ou uma subpágina dele. */
+export function isRouteActive(pathname: string, href: string) {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+/** Destino ao clicar no item: a página principal do submenu, se houver. */
+export function getNavItemTarget(item: NavItem) {
+  return item.children?.[0]?.href ?? item.href;
+}
+
+/** Localiza um subitem pelo id (para reaproveitar rótulo e ícone nas páginas). */
+export function getNavSubItem(id: string): NavSubItem {
+  for (const section of NAVIGATION) {
+    for (const item of section.items) {
+      const found = item.children?.find((child) => child.id === id);
+      if (found) return found;
+    }
+  }
+  throw new Error(`Subitem de navegação não encontrado: ${id}`);
+}
 
 export const ROUTES = {
   login: "/login",

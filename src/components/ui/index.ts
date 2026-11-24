@@ -7,4 +7,5 @@ export * from "./EmptyState";
 export * from "./IconButton";
 export * from "./Input";
 export * from "./Logo";
+export * from "./Modal";
 export * from "./Spinner";

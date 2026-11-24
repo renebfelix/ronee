@@ -108,9 +108,44 @@
     color: var(--color-primary);
   }
 
+  &.sectionActive {
+    color: var(--color-text);
+    font-weight: $weight-semibold;
+  }
+
   &.disabled {
     cursor: default;
     opacity: 0.7;
+  }
+}
+
+// Submenu do módulo: alinhado ao centro do ícone do item pai, com linha-guia à esquerda.
+.subList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 2px 0 $space-2 calc(#{$space-3} + 15px);
+  padding-left: $space-3;
+  border-left: 1px solid var(--color-border);
+}
+
+.subLink {
+  display: block;
+  padding: 6px $space-3;
+  border-radius: $radius-md;
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+  color: var(--color-text-muted);
+  @include transition(background-color, color);
+
+  &:hover {
+    background: var(--color-surface-2);
+    color: var(--color-text);
+  }
+
+  &.subActive {
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
   }
 }
 
