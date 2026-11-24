@@ -1,0 +1,81 @@
+@use "abstracts" as *;
+
+.card {
+  @include surface;
+  min-width: 0;
+}
+
+.pad-none {
+  padding: 0;
+}
+
+.pad-sm {
+  padding: $space-3;
+}
+
+.pad-md {
+  padding: $space-4;
+
+  @include up(md) {
+    padding: $space-5;
+  }
+}
+
+.pad-lg {
+  padding: $space-6;
+
+  @include up(md) {
+    padding: $space-8;
+  }
+}
+
+.interactive {
+  cursor: pointer;
+  @include transition(transform, box-shadow, border-color);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-primary-soft);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  margin-bottom: $space-4;
+}
+
+.headerIcon {
+  @include flex-center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-md;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.headerText {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: $font-md;
+  font-weight: $weight-semibold;
+  @include truncate;
+}
+
+.subtitle {
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  flex-shrink: 0;
+}

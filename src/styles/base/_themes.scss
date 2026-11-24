@@ -1,0 +1,78 @@
+// Cores temáveis. O tema é definido pelo atributo `data-theme` no <html>
+// (ver components/providers/ThemeProvider).
+
+@mixin light-theme {
+  --color-bg: #f5f6fb;
+  --color-surface: #ffffff;
+  --color-surface-2: #f0f2f8;
+  --color-border: #e3e6ef;
+  --color-text: #161a2b;
+  --color-text-muted: #636b85;
+  --color-text-subtle: #959cb3;
+
+  --color-primary: #5b5bf0;
+  --color-primary-hover: #4a48dc;
+  --color-primary-soft: #ececfe;
+  --color-on-primary: #ffffff;
+
+  --color-success: #16a571;
+  --color-success-soft: #e3f7ef;
+  --color-warning: #d98a06;
+  --color-warning-soft: #fdf3df;
+  --color-danger: #e0384f;
+  --color-danger-soft: #fde8eb;
+  --color-info: #1f8ae0;
+  --color-info-soft: #e3f1fc;
+
+  --overlay: rgb(15 18 34 / 45%);
+  --shadow-sm: 0 1px 2px rgb(22 26 43 / 5%), 0 1px 3px rgb(22 26 43 / 6%);
+  --shadow-md: 0 6px 20px rgb(22 26 43 / 8%);
+  --shadow-lg: 0 18px 48px rgb(22 26 43 / 14%);
+
+  color-scheme: light;
+}
+
+@mixin dark-theme {
+  --color-bg: #0e1020;
+  --color-surface: #161a2e;
+  --color-surface-2: #1e2339;
+  --color-border: #2a3050;
+  --color-text: #eef0fa;
+  --color-text-muted: #a3aac4;
+  --color-text-subtle: #6f7694;
+
+  --color-primary: #8183ff;
+  --color-primary-hover: #9798ff;
+  --color-primary-soft: #26285a;
+  --color-on-primary: #0e1020;
+
+  --color-success: #3ed39a;
+  --color-success-soft: #173a30;
+  --color-warning: #f3b43f;
+  --color-warning-soft: #3d3119;
+  --color-danger: #ff6b7f;
+  --color-danger-soft: #42202a;
+  --color-info: #5ab4ff;
+  --color-info-soft: #1a3048;
+
+  --overlay: rgb(0 0 0 / 60%);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
+  --shadow-md: 0 6px 20px rgb(0 0 0 / 35%);
+  --shadow-lg: 0 18px 48px rgb(0 0 0 / 50%);
+
+  color-scheme: dark;
+}
+
+:root {
+  @include light-theme;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    @include dark-theme;
+  }
+}
+
+:root[data-theme="dark"] {
+  @include dark-theme;
+}

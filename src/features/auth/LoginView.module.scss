@@ -1,0 +1,191 @@
+@use "abstracts" as *;
+
+.page {
+  display: grid;
+  min-height: 100dvh;
+
+  @include up(lg) {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  }
+}
+
+// Painel ilustrativo (apenas desktop)
+.hero {
+  display: none;
+  position: relative;
+  overflow: hidden;
+  flex-direction: column;
+  padding: $space-12;
+  color: #fff;
+  background:
+    radial-gradient(circle at 15% 20%, rgb(255 255 255 / 18%), transparent 40%),
+    radial-gradient(circle at 85% 80%, rgb(90 180 255 / 35%), transparent 45%),
+    linear-gradient(140deg, #4f4fe6 0%, #6a4ff0 45%, #1f8ae0 100%);
+
+  @include up(lg) {
+    display: flex;
+  }
+}
+
+.heroLogo {
+  [class*="mark"] {
+    background: rgb(255 255 255 / 18%);
+    backdrop-filter: blur(6px);
+  }
+}
+
+.heroBody {
+  margin: auto 0;
+  max-width: 540px;
+}
+
+.heroTitle {
+  font-size: $font-4xl;
+  font-weight: $weight-bold;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.heroText {
+  margin-top: $space-4;
+  font-size: $font-lg;
+  opacity: 0.85;
+}
+
+.showcase {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $space-3;
+  margin-top: $space-10;
+
+  @include up(xl) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.showcaseItem {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-3;
+  border-radius: $radius-md;
+  background: rgb(255 255 255 / 10%);
+  border: 1px solid rgb(255 255 255 / 15%);
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+  backdrop-filter: blur(6px);
+}
+
+.showcaseIcon {
+  @include flex-center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-sm;
+  background: rgb(255 255 255 / 18%);
+}
+
+// Formulário
+.panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-6 $space-4;
+
+  @include up(md) {
+    padding: $space-12 $space-8;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+  width: 100%;
+  max-width: 420px;
+}
+
+.mobileLogo {
+  margin-bottom: $space-2;
+
+  @include up(lg) {
+    display: none;
+  }
+}
+
+.title {
+  font-size: $font-2xl;
+  font-weight: $weight-bold;
+  letter-spacing: -0.02em;
+
+  @include up(md) {
+    font-size: $font-3xl;
+  }
+}
+
+.subtitle {
+  margin-top: $space-1;
+  color: var(--color-text-muted);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  font-size: $font-xs;
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.passwordField {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.forgot {
+  align-self: flex-end;
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+  color: var(--color-primary);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.switch {
+  text-align: center;
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+
+  button {
+    font-weight: $weight-semibold;
+    color: var(--color-primary);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+}

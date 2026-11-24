@@ -1,0 +1,32 @@
+@use "abstracts" as *;
+
+.shell {
+  min-height: 100dvh;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  min-width: 0;
+
+  @include up(lg) {
+    margin-left: $sidebar-width;
+  }
+}
+
+.content {
+  flex: 1;
+  width: 100%;
+  max-width: $content-max-width;
+  margin: 0 auto;
+  padding: $space-5 $space-4 $space-10;
+
+  @include up(md) {
+    padding: $space-8 $space-6 $space-12;
+  }
+
+  @include up(xl) {
+    padding: $space-8 $space-8 $space-12;
+  }
+}

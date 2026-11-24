@@ -1,0 +1,118 @@
+@use "abstracts" as *;
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: $z-topbar;
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  height: $topbar-height;
+  padding: 0 $space-4;
+  background: color-mix(in srgb, var(--color-bg) 82%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+
+  @include up(md) {
+    padding: 0 $space-6;
+  }
+}
+
+.menu {
+  @include up(lg) {
+    display: none;
+  }
+}
+
+.search {
+  display: none;
+  align-items: center;
+  gap: $space-2;
+  width: 100%;
+  max-width: 360px;
+  height: 40px;
+  padding: 0 $space-3;
+  border-radius: $radius-md;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-subtle);
+  font-size: $font-sm;
+
+  @include up(md) {
+    display: flex;
+  }
+}
+
+.searchMobile {
+  @include up(md) {
+    display: none;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  margin-left: auto;
+}
+
+// Mostra só o ícone que faz sentido para o tema atual.
+.themeDark {
+  display: none;
+}
+
+:global(:root[data-theme="dark"]) {
+  .themeLight {
+    display: none;
+  }
+
+  .themeDark {
+    display: flex;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) {
+    .themeLight {
+      display: none;
+    }
+
+    .themeDark {
+      display: flex;
+    }
+  }
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-left: $space-2;
+  padding-left: $space-3;
+  border-left: 1px solid var(--color-border);
+  min-width: 0;
+}
+
+.userText {
+  display: none;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 180px;
+  line-height: 1.25;
+
+  @include up(md) {
+    display: flex;
+  }
+}
+
+.userName {
+  font-size: $font-sm;
+  font-weight: $weight-semibold;
+  @include truncate;
+}
+
+.userEmail {
+  font-size: $font-xs;
+  color: var(--color-text-muted);
+  @include truncate;
+}

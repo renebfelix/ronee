@@ -1,0 +1,35 @@
+@use "abstracts" as *;
+
+.avatar {
+  @include flex-center;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: $radius-full;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-info));
+  color: #fff;
+  font-weight: $weight-semibold;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sm {
+  width: 32px;
+  height: 32px;
+  font-size: $font-xs;
+}
+
+.md {
+  width: 40px;
+  height: 40px;
+  font-size: $font-sm;
+}
+
+.lg {
+  width: 56px;
+  height: 56px;
+  font-size: $font-lg;
+}

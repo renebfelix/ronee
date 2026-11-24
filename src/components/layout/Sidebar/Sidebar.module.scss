@@ -1,0 +1,140 @@
+@use "abstracts" as *;
+
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: $z-sidebar;
+  display: flex;
+  flex-direction: column;
+  width: min($sidebar-width, 86vw);
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  transform: translateX(-100%);
+  @include transition(transform);
+
+  &.open {
+    transform: translateX(0);
+    box-shadow: var(--shadow-lg);
+  }
+
+  // Desktop: sidebar fixa e sempre visível.
+  @include up(lg) {
+    width: $sidebar-width;
+    transform: none;
+
+    &.open {
+      box-shadow: none;
+    }
+  }
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: $z-overlay;
+  background: var(--overlay);
+  opacity: 0;
+  pointer-events: none;
+  @include transition(opacity);
+
+  &.overlayVisible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @include up(lg) {
+    display: none;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: $topbar-height;
+  padding: 0 $space-5;
+  flex-shrink: 0;
+}
+
+.close {
+  @include up(lg) {
+    display: none;
+  }
+}
+
+.nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: $space-2 $space-3 $space-6;
+}
+
+.section + .section {
+  margin-top: $space-5;
+}
+
+.sectionTitle {
+  padding: 0 $space-3 $space-2;
+  font-size: 0.6875rem;
+  font-weight: $weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-subtle);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-2 $space-3;
+  border-radius: $radius-md;
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+  color: var(--color-text-muted);
+  @include transition(background-color, color);
+
+  &:hover:not(.disabled) {
+    background: var(--color-surface-2);
+    color: var(--color-text);
+  }
+
+  &.active {
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+  }
+
+  &.disabled {
+    cursor: default;
+    opacity: 0.7;
+  }
+}
+
+.icon {
+  @include flex-center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-sm;
+}
+
+@each $accent in primary, success, warning, danger, info {
+  .accent-#{$accent} {
+    background: var(--color-#{$accent}-soft);
+    color: var(--color-#{$accent});
+  }
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.soon {
+  flex-shrink: 0;
+}

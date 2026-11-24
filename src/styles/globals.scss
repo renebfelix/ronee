@@ -1,0 +1,29 @@
+@use "base/reset";
+@use "base/themes";
+@use "abstracts" as *;
+
+body {
+  font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: $font-md;
+  color: var(--color-text);
+  background: var(--color-bg);
+  @include transition(background-color, color);
+}
+
+::selection {
+  background: var(--color-primary-soft);
+  color: var(--color-text);
+}
+
+:focus-visible {
+  @include focus-ring;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
