@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Pencil, Plus, Trash2, type LucideIcon } from "lucide-react";
+import { Pencil, Plus, Star, Trash2, type LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils/cn";
 import { PageHeader } from "@/components/layout";
 import { Alert, Badge, Button, Card, EmptyState, IconButton, Modal } from "@/components/ui";
 import { getNavSubItem } from "@/config/navigation";
@@ -18,6 +19,26 @@ export interface RegistryRow {
   /** Valor em destaque à direita (ex.: saldo). */
   aside?: ReactNode;
   inactive?: boolean;
+  /** Selo ao lado do nome (ex.: "Padrão"). */
+  badge?: ReactNode;
+  /** Botões extras antes de editar/excluir. */
+  extraActions?: ReactNode;
+}
+
+/** Estrela para marcar o item como padrão nos novos lançamentos (clicar de novo desmarca). */
+export function DefaultToggle({ on, name, onToggle }: { on: boolean; name: string; onToggle: () => void }) {
+  return (
+    <button
+      type="button"
+      className={cn(styles.star, on && styles.starOn)}
+      onClick={onToggle}
+      aria-pressed={on}
+      aria-label={on ? `${name} é o padrão — remover padrão` : `Definir ${name} como padrão`}
+      title={on ? "Padrão nos novos lançamentos (clique para remover)" : "Definir como padrão nos novos lançamentos"}
+    >
+      <Star size={16} fill={on ? "currentColor" : "none"} aria-hidden />
+    </button>
+  );
 }
 
 interface RegistryViewProps<T extends { id: string; name: string }> {
@@ -120,12 +141,14 @@ export function RegistryView<T extends { id: string; name: string }>({
                   <div className={styles.main}>
                     <span className={styles.name}>
                       {row.name}
+                      {row.badge}
                       {row.inactive && <Badge>Desativado</Badge>}
                     </span>
                     {row.meta && <span className={styles.meta}>{row.meta}</span>}
                   </div>
                   {row.aside && <div className={styles.aside}>{row.aside}</div>}
                   <div className={styles.actions}>
+                    {row.extraActions}
                     <IconButton icon={Pencil} size="sm" label={`Editar ${row.name}`} onClick={() => setForm({ open: true, editing: item })} />
                     <IconButton icon={Trash2} size="sm" label={`Excluir ${row.name}`} onClick={() => askDelete(item)} />
                   </div>

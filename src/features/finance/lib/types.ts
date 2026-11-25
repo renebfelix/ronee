@@ -169,5 +169,9 @@ export interface UserSettings {
   id: string;
   /** Gasto mensal esperado (limite) para a minha parte ("Eu") nas despesas do mês. */
   monthlyBudget?: number;
+  /** Cartão que já vem selecionado ao lançar uma despesa. */
+  defaultCardId?: string;
+  /** Conta que já vem selecionada ao lançar uma receita (ou despesa paga pela conta). */
+  defaultAccountId?: string;
   updatedAt: number;
 }

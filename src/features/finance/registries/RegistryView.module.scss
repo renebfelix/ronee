@@ -67,3 +67,21 @@
   flex-shrink: 0;
   gap: $space-1;
 }
+
+.star {
+  @include flex-center;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-sm;
+  color: var(--color-text-subtle);
+  @include transition(background-color, color);
+
+  &:hover {
+    background: var(--color-surface-2);
+    color: var(--color-warning);
+  }
+}
+
+.starOn {
+  color: var(--color-warning);
+}

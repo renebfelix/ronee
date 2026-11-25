@@ -7,7 +7,9 @@ import type { CreditCard } from "../lib/types";
 import { brl, byName, parseMoney } from "../lib/format";
 import { IconBadge } from "../components/icons";
 import { AppearancePicker, Field, ui } from "../components/kit";
-import { RegistryForm, RegistryView } from "./RegistryView";
+import { Badge } from "@/components/ui";
+import { useDefaultMethods } from "../data/useDefaultMethods";
+import { DefaultToggle, RegistryForm, RegistryView } from "./RegistryView";
 
 const BRANDS = ["Visa", "Mastercard", "Elo", "American Express", "Hipercard", "Outra"];
 
@@ -71,11 +73,12 @@ function CardForm({ editing, onClose }: { editing: CreditCard | null; onClose: (
 
 export function CardsView() {
   const d = useFinance();
+  const defaults = useDefaultMethods();
 
   return (
     <RegistryView
       navId="finance-cards"
-      description="Cartões de crédito usados nos lançamentos."
+      description="Cartões de crédito usados nos lançamentos. A estrela define o cartão que já vem selecionado."
       newLabel="Novo cartão"
       emptyIcon={CreditCardIcon}
       emptyTitle="Nenhum cartão cadastrado"
@@ -88,6 +91,10 @@ export function CardsView() {
         meta: `${c.brand} · Melhor dia ${c.defaultBestDay} · Vence dia ${c.dueDay}`,
         aside: c.limit > 0 ? brl(c.limit) : undefined,
         inactive: !c.isActive,
+        badge: defaults.defaultCardId === c.id ? <Badge tone="warning">Padrão</Badge> : undefined,
+        extraActions: (
+          <DefaultToggle on={defaults.defaultCardId === c.id} name={c.name} onToggle={() => defaults.toggleDefault("card", c.id)} />
+        ),
       })}
       blockDelete={(c) =>
         d.transactions.some((t) => t.paymentMethodType === "CARD" && t.paymentMethodId === c.id)

@@ -5,7 +5,7 @@ import { useAuth } from "@/components/providers";
 import { Button, Modal } from "@/components/ui";
 import { cn } from "@/lib/utils/cn";
 import { useFinance } from "../data/FinanceDataProvider";
-import { ME_ID, type FrequencyType, type PaymentMethodType, type Transaction, type TransactionType } from "../lib/types";
+import { ME_ID, SETTINGS_ID, type FrequencyType, type PaymentMethodType, type Transaction, type TransactionType } from "../lib/types";
 import {
   addMonths,
   addMonthsToDate,
@@ -67,9 +67,15 @@ export function TransactionModal({ open, onClose, editing, initialType = "EXPENS
 
   const activeAccounts = byName(d.accounts.filter((a) => a.isActive));
   const activeCards = byName(d.cards.filter((c) => c.isActive));
+  // Cartão e conta marcados como padrão (estrela em Cartões/Bancos); sem padrão ativo, o primeiro da lista.
+  const settings = d.settings[SETTINGS_ID];
+  const firstOf = (m: PaymentMethodType) =>
+    m === "CARD"
+      ? (activeCards.find((c) => c.id === settings?.defaultCardId) ?? activeCards[0])?.id ?? ""
+      : (activeAccounts.find((a) => a.id === settings?.defaultAccountId) ?? activeAccounts[0])?.id ?? "";
   // Despesa nova começa no cartão de crédito; receita só entra em conta bancária; cobrança não tem método.
   const defaultMethod = (t: TransactionType): [PaymentMethodType, string] =>
-    t === "EXPENSE" ? ["CARD", activeCards[0]?.id ?? ""] : t === "CHARGE" ? ["NONE", ""] : ["BANK", activeAccounts[0]?.id ?? ""];
+    t === "EXPENSE" ? ["CARD", firstOf("CARD")] : t === "CHARGE" ? ["NONE", ""] : ["BANK", firstOf("BANK")];
   // Mês em que a ocorrência é cobrada: no cartão, o da fatura (mesma regra das ocorrências).
   const chargeMonthOf = (t: Pick<Transaction, "type" | "paymentMethodType" | "paymentMethodId">, at: string) => {
     const card =
@@ -219,7 +225,7 @@ export function TransactionModal({ open, onClose, editing, initialType = "EXPENS
   const changeMethodType = (m: PaymentMethodType) => {
     setMethodType(m);
     // Boleto não tem método cadastrado: a conta é escolhida ao marcar como pago.
-    setMethodId(m === "BOLETO" ? "" : ((m === "BANK" ? activeAccounts : activeCards)[0]?.id ?? ""));
+    setMethodId(m === "BOLETO" ? "" : firstOf(m));
   };
   const isBoleto = type === "EXPENSE" && methodType === "BOLETO";
   const isCharge = type === "CHARGE";

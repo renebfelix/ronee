@@ -7,7 +7,9 @@ import type { AccountKind, BankAccount } from "../lib/types";
 import { brl, byName, parseMoney } from "../lib/format";
 import { IconBadge } from "../components/icons";
 import { AppearancePicker, Field, ui } from "../components/kit";
-import { RegistryForm, RegistryView } from "./RegistryView";
+import { Badge } from "@/components/ui";
+import { useDefaultMethods } from "../data/useDefaultMethods";
+import { DefaultToggle, RegistryForm, RegistryView } from "./RegistryView";
 
 const KINDS: Record<AccountKind, string> = { CHECKING: "Conta corrente", SAVINGS: "Poupança", INVESTMENT: "Investimento" };
 
@@ -60,11 +62,12 @@ function BankForm({ editing, onClose }: { editing: BankAccount | null; onClose: 
 
 export function BanksView() {
   const d = useFinance();
+  const defaults = useDefaultMethods();
 
   return (
     <RegistryView
       navId="finance-banks"
-      description="Contas bancárias e saldos."
+      description="Contas bancárias e saldos. A estrela define a conta que já vem selecionada."
       newLabel="Nova conta"
       emptyIcon={Landmark}
       emptyTitle="Nenhuma conta cadastrada"
@@ -77,6 +80,10 @@ export function BanksView() {
         meta: KINDS[a.kind],
         aside: brl(d.balances[a.id] ?? 0),
         inactive: !a.isActive,
+        badge: defaults.defaultAccountId === a.id ? <Badge tone="warning">Padrão</Badge> : undefined,
+        extraActions: (
+          <DefaultToggle on={defaults.defaultAccountId === a.id} name={a.name} onToggle={() => defaults.toggleDefault("account", a.id)} />
+        ),
       })}
       blockDelete={(a) =>
         d.transactions.some(
