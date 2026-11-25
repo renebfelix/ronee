@@ -162,7 +162,11 @@ export function FinanceDataProvider({ children }: { children: ReactNode }) {
   /* Ocorrências: do mês mais antigo até 24 meses à frente */
   const occurrences = useMemo(() => {
     const cur = monthOf(todayStr());
-    const earliest = raw.transactions.reduce((m, t) => (monthOf(t.date) < m ? monthOf(t.date) : m), cur);
+    // Um mês de folga (fatura do mês anterior) mais o quanto o lançamento foi movido para trás.
+    const earliest = raw.transactions.reduce((m, t) => {
+      const start = addMonths(monthOf(t.date), Math.min(0, t.monthShift ?? 0, ...Object.values(t.occurrenceShifts ?? {})) - 1);
+      return start < m ? start : m;
+    }, cur);
     // Compras no cartão (únicas, parcelas e fixas) contam no mês da fatura em que caem, não no mês da compra.
     const monthFor = (t: Transaction, date: string) => {
       const card =
@@ -239,8 +243,8 @@ export function FinanceDataProvider({ children }: { children: ReactNode }) {
               : s,
           );
         if (tx.frequency === "FIXED") {
-          const cur = tx.occurrenceSplits?.[occ.monthYear] ?? tx.splits;
-          tx.occurrenceSplits = { ...(tx.occurrenceSplits ?? {}), [occ.monthYear]: update(cur) };
+          const cur = tx.occurrenceSplits?.[occ.baseMonth] ?? tx.splits;
+          tx.occurrenceSplits = { ...(tx.occurrenceSplits ?? {}), [occ.baseMonth]: update(cur) };
         } else {
           tx.splits = update(tx.splits);
         }
@@ -261,8 +265,8 @@ export function FinanceDataProvider({ children }: { children: ReactNode }) {
         tx.frequency === "FIXED"
           ? {
               ...tx,
-              occurrencePaid: { ...(tx.occurrencePaid ?? {}), [occ.monthYear]: paid },
-              ...(boleto ? { occurrencePaidFrom: { ...(tx.occurrencePaidFrom ?? {}), [occ.monthYear]: from } } : {}),
+              occurrencePaid: { ...(tx.occurrencePaid ?? {}), [occ.baseMonth]: paid },
+              ...(boleto ? { occurrencePaidFrom: { ...(tx.occurrencePaidFrom ?? {}), [occ.baseMonth]: from } } : {}),
             }
           : { ...tx, isPaid: paid, ...(boleto ? { paidFromAccountId: from } : {}) },
       );

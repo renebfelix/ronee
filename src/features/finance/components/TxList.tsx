@@ -2,13 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowDown, ArrowUp, ArrowUpDown, Check as CheckIcon, Copy, MoreVertical, Pencil, Receipt, Trash2, Undo2 } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, CalendarDays, Check as CheckIcon, Copy, MoreVertical, Pencil, Receipt, Trash2, Undo2 } from "lucide-react";
 import { Badge, EmptyState } from "@/components/ui";
 import { cn } from "@/lib/utils/cn";
 import { useFinance } from "../data/FinanceDataProvider";
 import { ME_ID, type Occurrence } from "../lib/types";
 import { isOccPaid, isPayable, isRefund, settleInfo } from "../lib/finance";
-import { brl, dateShort } from "../lib/format";
+import { brl, dateShort, monthLabel } from "../lib/format";
 import { IconBadge } from "./icons";
 import { Person } from "./kit";
 import styles from "./TxList.module.scss";
@@ -40,6 +40,8 @@ interface Props {
   mode?: "table" | "list";
   onEdit?: (o: Occurrence) => void;
   onDelete?: (o: Occurrence) => void;
+  /** Mover para outro mês/fatura, mantendo a data da compra. */
+  onMove?: (o: Occurrence) => void;
   emptyText?: string;
   sort?: TxSort;
   onSort?: (key: TxSortKey) => void;
@@ -68,6 +70,7 @@ interface RowMenuProps {
   o: Occurrence;
   onEdit?: (o: Occurrence) => void;
   onDelete?: (o: Occurrence) => void;
+  onMove?: (o: Occurrence) => void;
   onTogglePaid?: (o: Occurrence, paid: boolean) => void;
   onToggleReceived?: (o: Occurrence, received: boolean) => void;
 }
@@ -76,7 +79,7 @@ interface RowMenuProps {
  * Menu "⋮" de cada linha. O painel é fixo e vai para o <body>: a tabela tem rolagem
  * horizontal, que cortaria um painel posicionado dentro dela.
  */
-function RowMenu({ o, onEdit, onDelete, onTogglePaid, onToggleReceived }: RowMenuProps) {
+function RowMenu({ o, onEdit, onDelete, onMove, onTogglePaid, onToggleReceived }: RowMenuProps) {
   const [pos, setPos] = useState<{ top: number; right: number; up: boolean } | null>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -196,6 +199,11 @@ function RowMenu({ o, onEdit, onDelete, onTogglePaid, onToggleReceived }: RowMen
                 <Pencil size={16} /> Editar
               </button>
             )}
+            {onMove && (
+              <button type="button" role="menuitem" className={styles.menuItem} onClick={() => run(() => onMove(o))}>
+                <CalendarDays size={16} /> {o.tx.paymentMethodType === "CARD" && o.tx.type === "EXPENSE" ? "Mover para outra fatura" : "Mover para outro mês"}
+              </button>
+            )}
             {onDelete && (
               <button
                 type="button"
@@ -261,6 +269,13 @@ function Tags({ occ }: { occ: Occurrence }) {
         </Badge>
       )}
       {occ.tx.frequency === "FIXED" && <Badge tone="neutral">Fixa</Badge>}
+      {!!occ.monthShift && (
+        <span title={`Movido; o mês original é ${monthLabel(occ.baseMonth).toLowerCase()}`}>
+          <Badge tone="primary" icon={CalendarDays}>
+            Movido
+          </Badge>
+        </span>
+      )}
     </>
   );
 }
@@ -270,6 +285,7 @@ export function TxList({
   mode = "table",
   onEdit,
   onDelete,
+  onMove,
   emptyText,
   sort,
   onSort,
@@ -279,7 +295,7 @@ export function TxList({
   onToggleReceived,
 }: Props) {
   const d = useFinance();
-  const actions = !!(onEdit || onDelete || onTogglePaid || onToggleReceived);
+  const actions = !!(onEdit || onDelete || onMove || onTogglePaid || onToggleReceived);
   // Cobrança não tem categoria: mostra um rótulo próprio.
   const catOf = (o: Occurrence) => (isCharge(o) ? CHARGE_CAT : d.catById(o.tx.categoryId));
   const verifying = !!onToggleCheck;
@@ -306,7 +322,7 @@ export function TxList({
   // Chamado como função (não como componente) para o menu não perder o estado a cada render da lista.
   const renderActions = (o: Occurrence) =>
     actions ? (
-      <RowMenu o={o} onEdit={onEdit} onDelete={onDelete} onTogglePaid={onTogglePaid} onToggleReceived={onToggleReceived} />
+      <RowMenu o={o} onEdit={onEdit} onDelete={onDelete} onMove={onMove} onTogglePaid={onTogglePaid} onToggleReceived={onToggleReceived} />
     ) : null;
 
   // Título de coluna: vira botão de ordenação quando a tela passa onSort.

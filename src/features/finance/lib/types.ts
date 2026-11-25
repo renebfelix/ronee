@@ -104,6 +104,16 @@ export interface Transaction {
    * Valor e divisões ficam positivos no documento; as ocorrências usam o valor negativo.
    */
   isRefund?: boolean;
+  /**
+   * Lançamento movido (únicos e parcelas): quantos meses — ou faturas, no cartão — ele entra
+   * depois (+) ou antes (−) do mês natural. A data da compra não muda.
+   */
+  monthShift?: number;
+  /**
+   * Fixas: ocorrências movidas, por mês natural ("YYYY-MM") → deslocamento em meses/faturas.
+   * Ex.: { "2026-03": 1 } joga a cobrança de março para abril (abril passa a ter duas).
+   */
+  occurrenceShifts?: Record<string, number>;
   createdAt: number;
 }
 
@@ -126,11 +136,19 @@ export interface MonthlyInvoiceOverride {
 export interface Occurrence {
   key: string;
   tx: Transaction;
+  /** Mês em que a ocorrência aparece (fatura, no cartão), já considerando a movimentação. */
   monthYear: string;
+  /**
+   * Mês natural, sem movimentação. Em fixas, é a chave dos dados por mês
+   * (`occurrenceAmounts`, `occurrenceSplits`, `occurrencePaid`…), estável mesmo após mover.
+   */
+  baseMonth: string;
   date: string;
   amount: number;
   splits: ResponsibleSplit[];
   installment?: { current: number; total: number };
+  /** Movido de mês: deslocamento em relação ao mês natural (`monthYear` já considera isso). */
+  monthShift?: number;
 }
 
 export type OverrideMap = Record<string, MonthlyInvoiceOverride>;

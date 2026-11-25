@@ -92,7 +92,8 @@ export const isRefund = (tx: Pick<Transaction, 'isRefund' | 'type' | 'paymentMet
 /**
  * `monthFor` define o mês de cada ocorrência a partir da data dela
  * (ex.: compras no cartão, inclusive fixas, caem no mês da fatura).
- * Em fixas, baixas (`occurrenceSplits`), valores ajustados (`occurrenceAmounts`) e `endMonth` usam esse mesmo mês.
+ * Em fixas, baixas (`occurrenceSplits`), valores ajustados (`occurrenceAmounts`), pagamentos e `endMonth` usam esse
+ * mesmo mês — o mês natural (`baseMonth`), mesmo quando a ocorrência foi movida (`occurrenceShifts`).
  */
 export function buildOccurrences(
   txs: Transaction[],
@@ -103,28 +104,40 @@ export function buildOccurrences(
   const out: Occurrence[] = [];
   for (const tx of txs) {
     if (tx.frequency === 'FIXED') {
+      // Ocorrências movidas podem vir de meses fora do intervalo: amplia a varredura pelo maior deslocamento.
+      const shifts = Object.values(tx.occurrenceShifts ?? {});
+      const maxAhead = Math.max(0, ...shifts);
+      const maxBack = Math.max(0, ...shifts.map((s) => -s));
       const start = monthOf(tx.date);
       // A fatura cai no mês anterior, no mesmo ou no seguinte ao da data: varre um mês a mais de cada lado.
-      const before = addMonths(fromYm, -1);
+      const before = addMonths(fromYm, -1 - maxAhead);
       const first = start > before ? start : before;
-      const last = addMonths(toYm, 1);
+      const lastBase = addMonths(toYm, maxBack);
+      const last = addMonths(lastBase, 1);
       const day = Number(tx.date.slice(8, 10));
       for (let cal = first; cal <= last; cal = addMonths(cal, 1)) {
         const date = dateInMonth(cal, day);
-        const ym = monthFor(tx, date);
-        if (ym > toYm || (tx.endMonth && ym > tx.endMonth)) break;
-        if (ym < fromYm) continue;
+        const base = monthFor(tx, date);
+        if (base > lastBase || (tx.endMonth && base > tx.endMonth)) break;
+        const shift = tx.occurrenceShifts?.[base] ?? 0;
+        const ym = addMonths(base, shift);
+        if (ym < fromYm || ym > toYm) continue;
         out.push({
           key: `${tx.id}_${cal}`,
           tx,
           monthYear: ym,
+          baseMonth: base,
           date,
-          amount: tx.occurrenceAmounts?.[ym] ?? tx.totalAmount,
-          splits: tx.occurrenceSplits?.[ym] ?? tx.splits,
+          ...(shift ? { monthShift: shift } : {}),
+          amount: tx.occurrenceAmounts?.[base] ?? tx.totalAmount,
+          splits: tx.occurrenceSplits?.[base] ?? tx.splits,
         });
       }
     } else {
-      const ym = monthFor(tx, tx.date);
+      // Lançamento movido: entra N meses (ou faturas) depois do natural, mantendo a data original da compra.
+      const shift = tx.monthShift ?? 0;
+      const base = monthFor(tx, tx.date);
+      const ym = addMonths(base, shift);
       if (ym < fromYm || ym > toYm) continue;
       // Estorno entra negativo: abate a fatura, os gastos do mês e a parte de cada responsável.
       const refund = isRefund(tx);
@@ -132,7 +145,9 @@ export function buildOccurrences(
         key: tx.id,
         tx,
         monthYear: ym,
+        baseMonth: base,
         date: tx.date,
+        ...(shift ? { monthShift: shift } : {}),
         amount: refund ? -tx.totalAmount : tx.totalAmount,
         splits: refund ? tx.splits.map((s) => ({ ...s, amount: -s.amount })) : tx.splits,
         installment:
@@ -183,12 +198,15 @@ export const invoiceStatus = (
   return today > closingDate(card, ym, ov) ? 'CLOSED' : 'OPEN';
 };
 
-/** Agrupa as compras no cartão pela fatura em que caem. */
-export function cardInvoiceMap(card: CreditCard, occs: Occurrence[], ov: OverrideMap) {
+/**
+ * Agrupa as compras no cartão pela fatura em que caem.
+ * As ocorrências já vêm com `monthYear` = mês da fatura (inclusive as movidas para outra fatura).
+ */
+export function cardInvoiceMap(card: CreditCard, occs: Occurrence[]) {
   const map: Record<string, Occurrence[]> = {};
   for (const o of occs) {
     if (o.tx.type !== 'EXPENSE' || o.tx.paymentMethodType !== 'CARD' || o.tx.paymentMethodId !== card.id) continue;
-    (map[invoiceMonthOf(card, o.date, ov)] ??= []).push(o);
+    (map[o.monthYear] ??= []).push(o);
   }
   return map;
 }
@@ -202,11 +220,11 @@ export const isPayable = (o: Occurrence) => o.tx.type === 'EXPENSE' && o.tx.paym
 
 /** Boleto já pago (saiu do saldo). Em fixas, o pagamento é por mês. */
 export const isOccPaid = (o: Occurrence) =>
-  !!(o.tx.frequency === 'FIXED' ? o.tx.occurrencePaid?.[o.monthYear] : o.tx.isPaid);
+  !!(o.tx.frequency === 'FIXED' ? o.tx.occurrencePaid?.[o.baseMonth] : o.tx.isPaid);
 
 /** Conta escolhida ao pagar o boleto. */
 export const paidFromOf = (o: Occurrence): string | null =>
-  (o.tx.frequency === 'FIXED' ? o.tx.occurrencePaidFrom?.[o.monthYear] : o.tx.paidFromAccountId) ?? null;
+  (o.tx.frequency === 'FIXED' ? o.tx.occurrencePaidFrom?.[o.baseMonth] : o.tx.paidFromAccountId) ?? null;
 
 /* ───────────── Saldos ───────────── */
 
@@ -242,7 +260,7 @@ export function computeBalances(
   }
 
   for (const card of cards) {
-    const inv = cardInvoiceMap(card, occs, ov);
+    const inv = cardInvoiceMap(card, occs);
     for (const [ym, list] of Object.entries(inv)) {
       const o = ov[overrideId(card.id, ym)];
       if (o?.status === 'PAID' && o.paidFromAccountId && bal[o.paidFromAccountId] !== undefined) {

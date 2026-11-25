@@ -14,6 +14,7 @@ import { Field, FieldGroup, MonthPicker, Segmented, ui } from "./components/kit"
 import { TxList, nextTxSort, sortTx, type TxSort } from "./components/TxList";
 import { TransactionModal } from "./components/TransactionModal";
 import { BudgetSettingsModal, DeleteTransactionModal, PayBoletoModal, ReceiveChargeModal } from "./components/OccurrenceModals";
+import { MoveTransactionModal } from "./components/MoveTransactionModal";
 import styles from "./TransactionsView.module.scss";
 
 // Busca sem diferenciar maiúsculas nem acentos.
@@ -109,6 +110,7 @@ export function TransactionsView() {
     type: "EXPENSE",
   });
   const [toDelete, setToDelete] = useState<Occurrence | null>(null);
+  const [moving, setMoving] = useState<Occurrence | null>(null);
   const [paying, setPaying] = useState<Occurrence | null>(null);
   const [receiving, setReceiving] = useState<Occurrence | null>(null);
   // Começa do dia mais recente ao mais antigo; clicar em Lançamento, Data ou Valor reordena.
@@ -489,8 +491,9 @@ export function TransactionsView() {
           onToggleCheck={verifying ? toggleCheck : undefined}
           sort={sort}
           onSort={(k) => setSort((s) => nextTxSort(s, k))}
-          onEdit={(o) => setModal({ open: true, editing: o.tx, type: o.tx.type, month: o.monthYear })}
+          onEdit={(o) => setModal({ open: true, editing: o.tx, type: o.tx.type, month: o.baseMonth })}
           onDelete={setToDelete}
+          onMove={verifying ? undefined : setMoving}
           onTogglePaid={verifying ? undefined : (o, paid) => (paid ? setPaying(o) : d.setOccPaid(o, false))}
           onToggleReceived={
             verifying
@@ -516,6 +519,7 @@ export function TransactionsView() {
         onClose={() => setModal((m) => ({ ...m, open: false }))}
       />
       <DeleteTransactionModal occ={toDelete} onClose={() => setToDelete(null)} />
+      <MoveTransactionModal occ={moving} onClose={() => setMoving(null)} />
       <PayBoletoModal occ={paying} onClose={() => setPaying(null)} />
       <ReceiveChargeModal occ={receiving} onClose={() => setReceiving(null)} />
       <BudgetSettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />

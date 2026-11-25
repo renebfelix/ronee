@@ -164,6 +164,11 @@ export function TransactionModal({ open, onClose, editing, initialType = "EXPENS
     if (v) setFrequency("SINGLE");
   };
   const firstInvoice = invoiceCard && isDate(date) ? invoiceMonthOf(invoiceCard, date, d.overrides) : null;
+  // Lançamento movido de mês: o deslocamento continua valendo mesmo se a data mudar.
+  const movedTo =
+    editing?.monthShift && editing.frequency !== "FIXED" && isDate(date)
+      ? addMonths(chargeMonthOf({ type, paymentMethodType: methodType, paymentMethodId: methodId }, date), editing.monthShift)
+      : null;
   // Fixas: cobra as ocorrências com data até a data limite; a última define o `endMonth`.
   const canEnd = !!editing && frequency === "FIXED";
   const lastChargeDate = useMemo(() => {
@@ -514,7 +519,9 @@ export function TransactionModal({ open, onClose, editing, initialType = "EXPENS
               <Field
                 label={asRefund ? "Data do estorno" : isInstallment && !editing ? "Data da compra" : "Data"}
                 hint={
-                  firstInvoice && asRefund
+                  movedTo
+                    ? `Movido: aparece ${invoiceCard ? "na fatura de" : "em"} ${monthLabel(movedTo).toLowerCase()}. Para mudar, use “Mover” na lista.`
+                    : firstInvoice && asRefund
                     ? `Abate da fatura de ${monthLabel(firstInvoice).toLowerCase()}.`
                     : firstInvoice && !(editing && isInstallment)
                       ? `${isInstallment ? "1ª parcela na fatura" : frequency === "FIXED" ? "1ª cobrança na fatura" : "Entra na fatura"} de ${monthLabel(firstInvoice).toLowerCase()}.`

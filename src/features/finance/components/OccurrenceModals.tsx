@@ -81,13 +81,13 @@ export function DeleteTransactionModal({ occ, onClose }: { occ: Occurrence | nul
         )}
         {tx.frequency === "FIXED" && (
           <>
-            {addMonths(occ.monthYear, -1) >= monthOf(tx.date) && (
+            {addMonths(occ.baseMonth, -1) >= monthOf(tx.date) && (
               <Button
                 variant="danger"
                 disabled={busy}
-                onClick={() => run(() => d.save("transactions", { ...tx, endMonth: addMonths(occ.monthYear, -1) }))}
+                onClick={() => run(() => d.save("transactions", { ...tx, endMonth: addMonths(occ.baseMonth, -1) }))}
               >
-                Encerrar a partir de {monthLabel(occ.monthYear)}
+                Encerrar a partir de {monthLabel(occ.baseMonth)}
               </Button>
             )}
             <Button variant="danger" disabled={busy} onClick={() => run(() => d.remove("transactions", tx.id))}>
