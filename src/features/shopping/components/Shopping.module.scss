@@ -1,0 +1,614 @@
+@use "abstracts" as *;
+
+/* ---------- foto do produto (ImgBB) ---------- */
+.thumb {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: $radius-sm;
+  object-fit: cover;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+}
+
+.thumbPlaceholder {
+  @include flex-center;
+  color: var(--color-text-subtle);
+}
+
+.thumbLg {
+  width: 72px;
+  height: 72px;
+  border-radius: $radius-md;
+}
+
+.thumbHero {
+  width: 112px;
+  height: 112px;
+  border-radius: $radius-lg;
+}
+
+.thumbButton {
+  flex-shrink: 0;
+  padding: 0;
+  border-radius: $radius-sm;
+  cursor: zoom-in;
+  @include focus-visible;
+}
+
+.photoPicker {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+}
+
+.photoActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+/* Botão-label para o <input type="file"> com o visual do Button secundário. */
+.fileButton {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  height: 36px;
+  padding: 0 $space-3;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  background: var(--color-surface);
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+  color: var(--color-text);
+  cursor: pointer;
+  @include transition(border-color, background-color);
+
+  &:hover {
+    border-color: var(--color-primary);
+  }
+
+  &:focus-within {
+    @include focus-ring;
+  }
+}
+
+.viewer {
+  display: block;
+  max-width: 100%;
+  max-height: 70vh;
+  margin: 0 auto;
+  border-radius: $radius-md;
+  object-fit: contain;
+}
+
+/* ---------- busca ---------- */
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: $space-4;
+
+  input {
+    width: 100%;
+    height: 44px;
+    padding: 0 $space-10 0 $space-10;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: $radius-md;
+    font-size: $font-md;
+    color: var(--color-text);
+    outline: none;
+    @include transition(border-color, box-shadow);
+
+    &::placeholder {
+      color: var(--color-text-subtle);
+    }
+
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px var(--color-primary-soft);
+    }
+
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+  }
+}
+
+.searchIcon {
+  position: absolute;
+  left: $space-3;
+  color: var(--color-text-subtle);
+  pointer-events: none;
+}
+
+.searchClear {
+  position: absolute;
+  right: $space-1;
+}
+
+/* ---------- listas ---------- */
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-3 $space-4;
+  border-bottom: 1px solid var(--color-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @include up(md) {
+    padding: $space-3 $space-5;
+  }
+}
+
+.rowDone {
+  .name {
+    text-decoration: line-through;
+    color: var(--color-text-muted);
+  }
+
+  .thumb {
+    opacity: 0.6;
+  }
+}
+
+.checkbox {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  accent-color: var(--color-success);
+  cursor: pointer;
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  font-weight: $weight-semibold;
+  min-width: 0;
+
+  span {
+    @include truncate;
+  }
+}
+
+.link {
+  color: inherit;
+
+  &:hover .name {
+    color: var(--color-primary);
+  }
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-1 $space-2;
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+}
+
+.variantLabel {
+  font-size: $font-sm;
+  color: var(--color-primary);
+  font-weight: $weight-medium;
+  @include truncate;
+}
+
+.subtotal {
+  flex-shrink: 0;
+  font-weight: $weight-semibold;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-success);
+}
+
+.actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: $space-1;
+}
+
+.group {
+  margin-bottom: $space-4;
+}
+
+.groupTitle {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin: 0 0 $space-2 $space-1;
+  font-size: $font-sm;
+  font-weight: $weight-semibold;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.count {
+  padding: 0 $space-2;
+  border-radius: $radius-full;
+  background: var(--color-surface-2);
+  font-size: $font-xs;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-4;
+}
+
+/* ---------- progresso e totais da lista ---------- */
+.progressCard {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  margin-bottom: $space-4;
+}
+
+.progressText {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+
+  svg {
+    color: var(--color-success);
+  }
+
+  strong {
+    color: var(--color-text);
+  }
+}
+
+.progress {
+  height: 8px;
+  border-radius: $radius-full;
+  background: var(--color-surface-2);
+  overflow: hidden;
+
+  span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-success);
+    @include transition(width);
+  }
+}
+
+.totals {
+  position: sticky;
+  bottom: $space-3;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-3 $space-5;
+  margin-top: $space-6;
+  padding: $space-3 $space-4;
+  @include surface;
+  box-shadow: var(--shadow-md, var(--shadow-sm));
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+
+  small {
+    display: block;
+    font-size: $font-xs;
+    color: var(--color-text-muted);
+  }
+
+  strong {
+    font-size: $font-lg;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.statIcon {
+  @include flex-center;
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-md;
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+.statIconAlt {
+  background: var(--color-info-soft);
+  color: var(--color-info);
+}
+
+.totalsAction {
+  margin-left: auto;
+
+  @include down(sm) {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+/* ---------- linha "adicionar ao mês" ---------- */
+.qtyInline {
+  width: 72px;
+  flex-shrink: 0;
+}
+
+.variantSelect {
+  height: 36px;
+  margin-top: $space-1;
+  font-size: $font-sm;
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  color: var(--color-text-muted);
+
+  strong {
+    color: var(--color-text);
+  }
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  legend {
+    margin-bottom: $space-2;
+    font-size: $font-sm;
+    font-weight: $weight-medium;
+  }
+
+  label {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    font-size: $font-sm;
+    cursor: pointer;
+  }
+
+  input {
+    accent-color: var(--color-primary);
+  }
+}
+
+/* ---------- marcas e tamanhos ---------- */
+.variants {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  align-items: flex-start;
+}
+
+.variantRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 88px 72px 36px;
+  gap: $space-2;
+  width: 100%;
+  align-items: center;
+}
+
+/* ---------- histórico ---------- */
+.purchase {
+  border-bottom: 1px solid var(--color-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  summary {
+    list-style: none;
+    cursor: pointer;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  &[open] .chevron {
+    transform: rotate(180deg);
+  }
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--color-text-subtle);
+  @include transition(transform);
+}
+
+.rowIcon {
+  @include flex-center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-md;
+  background: var(--color-info-soft);
+  color: var(--color-info);
+}
+
+.priceTag {
+  flex-shrink: 0;
+  font-weight: $weight-bold;
+  font-variant-numeric: tabular-nums;
+}
+
+.purchaseItems {
+  margin: 0;
+  padding: 0 $space-4 $space-2;
+  list-style: none;
+
+  @include up(md) {
+    padding: 0 $space-5 $space-2 calc(#{$space-5} + 40px + #{$space-3});
+  }
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    gap: $space-3;
+    padding: $space-2 0;
+    border-top: 1px dashed var(--color-border);
+    font-size: $font-sm;
+
+    > span:last-child {
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  a:hover {
+    color: var(--color-primary);
+  }
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+.purchaseActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 $space-4 $space-3;
+}
+
+/* ---------- detalhe do produto ---------- */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  margin-bottom: $space-4;
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+.detailHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-5;
+  margin-bottom: $space-6;
+
+  h1 {
+    margin: 0 0 $space-2;
+    font-size: $font-2xl;
+  }
+}
+
+.iconText {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-bottom: $space-2;
+  color: var(--color-text-muted);
+  font-size: $font-sm;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin: 0 0 $space-3;
+  font-size: $font-lg;
+}
+
+.chart {
+  width: 100%;
+  height: 280px;
+  margin-bottom: $space-5;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $font-sm;
+
+  th,
+  td {
+    padding: $space-3 $space-4;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+  }
+
+  th {
+    font-size: $font-xs;
+    font-weight: $weight-semibold;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  td {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.best {
+  color: var(--color-success);
+  font-weight: $weight-semibold;
+
+  svg {
+    vertical-align: -2px;
+  }
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  padding: $space-16 0;
+  color: var(--color-primary);
+}
+
+/* ---------- importação ---------- */
+.importBody {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.importList {
+  margin: 0;
+  padding-left: $space-5;
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+}
