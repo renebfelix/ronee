@@ -4,14 +4,15 @@ import { useEffect } from "react";
 
 /**
  * Registra o service worker (public/sw.js) apenas em produção.
- * Em desenvolvimento remove registros antigos para não servir arquivos em cache.
+ * Em desenvolvimento remove registros antigos para não servir arquivos em cache
+ * (menos o "/sw.js?dev", que só cuida das notificações de Tarefas).
  */
 export function ServiceWorkerRegister() {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
 
     if (process.env.NODE_ENV !== "production") {
-      navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.unregister()));
+      navigator.serviceWorker.getRegistrations().then((regs) => regs.filter((r) => !r.active?.scriptURL.includes("?dev")).forEach((r) => r.unregister()));
       return;
     }
 

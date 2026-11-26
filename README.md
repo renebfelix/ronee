@@ -1,6 +1,6 @@
 # Ronee
 
-Plataforma de gerenciamento de vida completo: finanças, tarefas de casa, agenda, lembretes, estoque,
+Plataforma de gerenciamento de vida completo: finanças, tarefas, tarefas de casa, agenda, estoque,
 listas de compras, alertas, treinos, alimentação, sono e saúde.
 
 **Stack:** Next.js 16 (App Router) · React 19 · TypeScript · SCSS Modules · Firebase · Lucide Icons
@@ -56,6 +56,27 @@ src/
   `comingSoon` do item em `src/config/navigation.ts`. Toda página em `(app)` deve exportar
   `export const instant = false;` — o conteúdo protegido só renderiza no cliente após o Firebase
   confirmar a sessão, e sem isso o Next acusa "could not validate instant navigation" em dev.
+
+## Tarefas
+
+Módulo em `src/features/tasks/` (rotas em `/tarefas`), com dados em `users/{uid}/modules/tasks/...`:
+tarefas com descrição em texto rico, categorias editáveis (nome, ícone e cor — as padrão são criadas
+no primeiro acesso), prioridade, prazo, busca, filtros e ordenação.
+
+- **Recorrência**: com prazo definido, a tarefa pode se repetir (todo dia, dias úteis, toda semana,
+  todo mês ou todo ano). Concluir não a encerra: o prazo avança para a próxima ocorrência
+  (`src/features/tasks/lib/recurrence.ts`).
+- **Resumo diário por push**: no botão "Resumo diário", cada aparelho ativa um aviso com as tarefas
+  de hoje e atrasadas, no horário escolhido. O token fica em `.../tasks/devices/{token}` e a rota
+  `GET /api/cron/tarefas` (chamada de hora em hora) envia o resumo uma vez por dia. Para configurar:
+  1. **Cloud Messaging → Certificados push da Web** → gere o par e coloque a chave pública em
+     `RONEE_NEXT_PUBLIC_FIREBASE_VAPID_KEY`.
+  2. **Contas de serviço → Gerar nova chave privada** → JSON (em uma linha ou base64) em
+     `RONEE_FIREBASE_SERVICE_ACCOUNT`, só no servidor.
+  3. Defina `RONEE_CRON_SECRET` com um valor aleatório.
+  4. Agende a chamada: o workflow `.github/workflows/tasks-reminders.yml` usa a variável
+     `RONEE_TASKS_REMINDERS_URL` e o segredo `RONEE_CRON_SECRET` do GitHub Actions. Qualquer
+     agendador serve: `curl -H "Authorization: Bearer $RONEE_CRON_SECRET" https://SEU-DOMINIO/api/cron/tarefas`.
 
 ## Scripts
 

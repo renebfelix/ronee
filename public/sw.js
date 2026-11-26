@@ -1,4 +1,4 @@
-/* Service worker do Ronee — habilita instalação (PWA/TWA) e modo offline básico. */
+/* Service worker do Ronee — habilita instalação (PWA/TWA), modo offline básico e o push do resumo de Tarefas. */
 
 // Altere a versão para invalidar os caches antigos em um novo deploy.
 const VERSION = "v1";
@@ -44,9 +44,12 @@ function isStaticAsset(url) {
   );
 }
 
+// Registrado como /sw.js?dev no ambiente de desenvolvimento: só cuida das notificações.
+const DEV = new URL(self.location.href).searchParams.has("dev");
+
 self.addEventListener("fetch", (event) => {
   const { request } = event;
-  if (request.method !== "GET") return;
+  if (DEV || request.method !== "GET") return;
 
   const url = new URL(request.url);
   // Firebase, Google e outros domínios passam direto pela rede.
@@ -86,4 +89,37 @@ self.addEventListener("fetch", (event) => {
       ),
     );
   }
+});
+
+// Resumo diário de Tarefas enviado por /api/cron/tarefas via Firebase Cloud Messaging (mensagens só com "data").
+self.addEventListener("push", (event) => {
+  let payload = {};
+  try {
+    payload = event.data?.json() ?? {};
+  } catch {}
+  const data = { ...payload.notification, ...payload.data };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title || "Ronee", {
+      body: data.body || "",
+      icon: "/icons/icon-192.png",
+      badge: "/icons/icon-192.png",
+      tag: data.tag || "ronee-tasks",
+      data: { url: data.url || "/tarefas/lista" },
+    }),
+  );
+});
+
+// Ao tocar na notificação, leva o app aberto até a página (ou abre uma nova janela).
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = new URL(event.notification.data?.url || "/", self.location.origin).href;
+
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((windows) => {
+      const open = windows.find((w) => new URL(w.url).origin === self.location.origin);
+      if (open) return open.focus().then((w) => (w && "navigate" in w ? w.navigate(url) : w));
+      return self.clients.openWindow(url);
+    }),
+  );
 });

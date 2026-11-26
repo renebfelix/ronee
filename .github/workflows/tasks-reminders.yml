@@ -1,0 +1,21 @@
+# Dispara de hora em hora a rota que envia o resumo diário de Tarefas por push.
+# Configure em Settings → Secrets and variables → Actions:
+#   variável RONEE_TASKS_REMINDERS_URL (ex.: https://SEU-DOMINIO/api/cron/tarefas)
+#   segredo  RONEE_CRON_SECRET         (o mesmo valor do ambiente de produção)
+name: Resumo diário de tarefas
+
+on:
+  schedule:
+    - cron: "5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  send:
+    if: vars.RONEE_TASKS_REMINDERS_URL != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chamar /api/cron/tarefas
+        run: |
+          curl --fail-with-body -sS \
+            -H "Authorization: Bearer ${{ secrets.RONEE_CRON_SECRET }}" \
+            "${{ vars.RONEE_TASKS_REMINDERS_URL }}"
