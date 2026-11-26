@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
     RONEE_NEXT_PUBLIC_FIREBASE_APP_ID: process.env.RONEE_NEXT_PUBLIC_FIREBASE_APP_ID,
     RONEE_NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: process.env.RONEE_NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
     RONEE_NEXT_PUBLIC_VAULT_KEY: process.env.RONEE_NEXT_PUBLIC_VAULT_KEY,
+    RONEE_NEXT_PUBLIC_IMGBB_API_KEY: process.env.RONEE_NEXT_PUBLIC_IMGBB_API_KEY,
   },
   sassOptions: {
     // Permite `@use "abstracts" as *;` em qualquer módulo SCSS.

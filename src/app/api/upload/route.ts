@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 
 /**
  * Upload de imagens para o ImgBB (fotos dos produtos da Lista de compras).
- * A chave `RONEE_IMGBB_API_KEY` só existe no servidor — nunca vai para o navegador.
+ * A chave `RONEE_NEXT_PUBLIC_IMGBB_API_KEY` só existe no servidor — nunca vai para o navegador.
  */
 export async function POST(req: Request) {
-  const key = process.env.RONEE_IMGBB_API_KEY;
+  const key = process.env.RONEE_NEXT_PUBLIC_IMGBB_API_KEY;
   if (!key) {
     return NextResponse.json({ error: "Chave do ImgBB não configurada." }, { status: 500 });
   }
