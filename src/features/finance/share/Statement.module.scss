@@ -1,0 +1,161 @@
+@use "abstracts" as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+  max-width: 880px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: $space-5 $space-4 $space-10;
+  background: var(--color-bg);
+
+  @include up(md) {
+    padding: $space-8 $space-6 $space-12;
+  }
+}
+
+.locked {
+  justify-content: center;
+}
+
+.gate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-3;
+  max-width: 440px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.gateIcon {
+  @include flex-center;
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-full;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.gateTitle {
+  font-size: $font-xl;
+  font-weight: $weight-bold;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  min-width: 0;
+}
+
+.title {
+  font-size: $font-2xl;
+  font-weight: $weight-bold;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.muted {
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+}
+
+.kpis {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-3;
+
+  @include up(sm) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+}
+
+.kpiLabel {
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+}
+
+.kpiValue {
+  font-size: $font-2xl;
+  font-weight: $weight-bold;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.kpiOut {
+  color: var(--color-danger);
+}
+
+.listTitle {
+  padding: $space-4 $space-4 $space-3;
+  font-size: $font-lg;
+  font-weight: $weight-semibold;
+  border-bottom: 1px solid var(--color-border);
+
+  @include up(md) {
+    padding: $space-4 $space-5 $space-3;
+  }
+}
+
+.listPad {
+  padding: $space-4;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-3 $space-4;
+  border-bottom: 1px solid var(--color-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @include up(md) {
+    padding: $space-3 $space-5;
+  }
+}
+
+.itemMain {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 160px;
+}
+
+.amount {
+  font-variant-numeric: tabular-nums;
+}
+
+.foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-2;
+  margin-top: auto;
+  text-align: center;
+}

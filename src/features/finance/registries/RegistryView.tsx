@@ -53,6 +53,10 @@ interface RegistryViewProps<T extends { id: string; name: string }> {
   toRow: (item: T) => RegistryRow;
   /** Conteúdo acima da lista (ex.: seletor de tipo). */
   toolbar?: ReactNode;
+  /** Controles extras no cabeçalho, antes do botão de criar. */
+  headerActions?: ReactNode;
+  /** Quando definido, aparece no lugar da lista (ex.: outra aba da página). */
+  content?: ReactNode;
   /** Mensagem quando o item não pode ser excluído (está em uso); `null` libera a exclusão. */
   blockDelete: (item: T) => string | null;
   onDelete: (item: T) => Promise<void>;
@@ -72,6 +76,8 @@ export function RegistryView<T extends { id: string; name: string }>({
   items,
   toRow,
   toolbar,
+  headerActions,
+  content,
   blockDelete,
   onDelete,
   deleteTitle,
@@ -106,9 +112,12 @@ export function RegistryView<T extends { id: string; name: string }>({
         title={label}
         description={description}
         actions={
-          <Button icon={Plus} onClick={() => setForm({ open: true, editing: null })}>
-            {newLabel}
-          </Button>
+          <>
+            {headerActions}
+            <Button icon={Plus} onClick={() => setForm({ open: true, editing: null })}>
+              {newLabel}
+            </Button>
+          </>
         }
       />
 
@@ -117,46 +126,50 @@ export function RegistryView<T extends { id: string; name: string }>({
           {blocked}
         </Alert>
       )}
-      {toolbar && <div className={styles.toolbar}>{toolbar}</div>}
+      {content ?? (
+        <>
+          {toolbar && <div className={styles.toolbar}>{toolbar}</div>}
 
-      {items.length === 0 ? (
-        <EmptyState
-          icon={emptyIcon}
-          title={emptyTitle}
-          description={emptyText}
-          action={
-            <Button icon={Plus} onClick={() => setForm({ open: true, editing: null })}>
-              {newLabel}
-            </Button>
-          }
-        />
-      ) : (
-        <Card padding="none">
-          <ul className={styles.list}>
-            {items.map((item) => {
-              const row = toRow(item);
-              return (
-                <li key={row.id} className={styles.row}>
-                  {row.visual}
-                  <div className={styles.main}>
-                    <span className={styles.name}>
-                      {row.name}
-                      {row.badge}
-                      {row.inactive && <Badge>Desativado</Badge>}
-                    </span>
-                    {row.meta && <span className={styles.meta}>{row.meta}</span>}
-                  </div>
-                  {row.aside && <div className={styles.aside}>{row.aside}</div>}
-                  <div className={styles.actions}>
-                    {row.extraActions}
-                    <IconButton icon={Pencil} size="sm" label={`Editar ${row.name}`} onClick={() => setForm({ open: true, editing: item })} />
-                    <IconButton icon={Trash2} size="sm" label={`Excluir ${row.name}`} onClick={() => askDelete(item)} />
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </Card>
+          {items.length === 0 ? (
+            <EmptyState
+              icon={emptyIcon}
+              title={emptyTitle}
+              description={emptyText}
+              action={
+                <Button icon={Plus} onClick={() => setForm({ open: true, editing: null })}>
+                  {newLabel}
+                </Button>
+              }
+            />
+          ) : (
+            <Card padding="none">
+              <ul className={styles.list}>
+                {items.map((item) => {
+                  const row = toRow(item);
+                  return (
+                    <li key={row.id} className={styles.row}>
+                      {row.visual}
+                      <div className={styles.main}>
+                        <span className={styles.name}>
+                          {row.name}
+                          {row.badge}
+                          {row.inactive && <Badge>Desativado</Badge>}
+                        </span>
+                        {row.meta && <span className={styles.meta}>{row.meta}</span>}
+                      </div>
+                      {row.aside && <div className={styles.aside}>{row.aside}</div>}
+                      <div className={styles.actions}>
+                        {row.extraActions}
+                        <IconButton icon={Pencil} size="sm" label={`Editar ${row.name}`} onClick={() => setForm({ open: true, editing: item })} />
+                        <IconButton icon={Trash2} size="sm" label={`Excluir ${row.name}`} onClick={() => askDelete(item)} />
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </Card>
+          )}
+        </>
       )}
 
       {form.open && renderForm(form.editing, close)}

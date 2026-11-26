@@ -234,3 +234,18 @@
 .iconpickOn {
   border-width: 2px;
 }
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+  cursor: pointer;
+
+  input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-primary);
+  }
+}

@@ -48,11 +48,61 @@ export interface Category {
   isActive: boolean;
 }
 
+/** Quem pode abrir a página pública (fatura) de um responsável. */
+export type ShareMode = "PRIVATE" | "EMAIL" | "PUBLIC";
+
 export interface Responsible {
   id: string;
   name: string;
   avatarUrl?: string;
+  /** E-mail Google autorizado quando `shareMode` é EMAIL. */
   email?: string;
+  shareMode?: ShareMode;
+  /** Id (aleatório) do documento em `shares/` — é o que vai no link. */
+  shareId?: string;
+}
+
+/** Item da página pública: só o necessário para o responsável, sem dados do dono. */
+export interface ShareItem {
+  key: string;
+  title: string;
+  date: string;
+  amount: number;
+  isPaid: boolean;
+  paidAt?: string | null;
+  category: string;
+  color: string;
+  icon: string;
+  method: string;
+  installment?: string;
+}
+
+export interface ShareMonthSummary {
+  pending: number;
+  paid: number;
+  count: number;
+}
+
+/** `shares/{shareId}` — espelho público mantido pelo app do dono. */
+export interface ShareDoc {
+  id: string;
+  ownerUid: string;
+  ownerName: string | null;
+  responsibleId: string;
+  name: string;
+  avatarUrl: string | null;
+  mode: ShareMode;
+  email: string | null;
+  months: Record<string, ShareMonthSummary>;
+  hashes: Record<string, string>;
+  updatedAt: number;
+}
+
+/** `shares/{shareId}/months/{YYYY-MM}` */
+export interface ShareMonthDoc {
+  ownerUid: string;
+  monthYear: string;
+  items: ShareItem[];
 }
 
 export interface ResponsibleSplit {

@@ -18,6 +18,7 @@ import {
   type Transaction,
   type UserSettings,
 } from "../lib/types";
+import { useShareSync } from "./useShareSync";
 import { addMonths, buildOccurrences, computeBalances, invoiceMonthOf, monthOf, todayStr } from "../lib/finance";
 
 /**
@@ -273,6 +274,18 @@ export function FinanceDataProvider({ children }: { children: ReactNode }) {
     },
     [save],
   );
+
+  // Espelho público (páginas /fatura/…) de cada responsável.
+  const methodName = useCallback((o: Occurrence) => methodOf(o.tx).name, [methodOf]);
+  useShareSync({
+    uid,
+    ownerName: user?.displayName ?? null,
+    loading,
+    responsibles: raw.responsibles,
+    occurrences,
+    catById,
+    methodName,
+  });
 
   if (error) {
     return (
