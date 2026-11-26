@@ -1,0 +1,75 @@
+@use "abstracts" as *;
+
+.grid {
+  display: grid;
+  gap: $space-6;
+  align-items: start;
+
+  @include up(lg) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.methods {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  margin-top: $space-4;
+}
+
+.method {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-3 $space-4;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+}
+
+.methodIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: $radius-sm;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.methodText {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+
+  strong {
+    font-weight: $weight-semibold;
+  }
+
+  span {
+    font-size: $font-sm;
+    color: var(--color-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  margin-top: $space-4;
+}
+
+.note {
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}

@@ -1,0 +1,10 @@
+import type { Metadata } from "next";
+import { SettingsView } from "@/features/settings";
+
+export const metadata: Metadata = { title: "Configurações" };
+
+export const instant = false;
+
+export default function SettingsPage() {
+  return <SettingsView />;
+}

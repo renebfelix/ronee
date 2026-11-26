@@ -108,7 +108,7 @@ const MODULES: NavItem[] = [
   { id: "nutrition", label: "Alimentação", href: "/alimentacao", icon: Apple, accent: "success", comingSoon: true },
   { id: "health", label: "Sono e saúde", href: "/saude", icon: HeartPulse, accent: "danger", comingSoon: true },
   { id: "notifications", label: "Alertas", href: "/alertas", icon: Bell, accent: "warning", comingSoon: true },
-  { id: "settings", label: "Configurações", href: "/configuracoes", icon: Settings, accent: "primary", comingSoon: true },
+  { id: "settings", label: "Configurações", href: "/configuracoes", icon: Settings, accent: "primary" },
 ];
 
 /** Fonte única da navegação: módulos disponíveis primeiro, depois os que ainda estão por vir. */
