@@ -13,6 +13,7 @@ import {
   KeyRound,
   Landmark,
   LayoutDashboard,
+  NotebookPen,
   Package,
   Settings,
   ShoppingBasket,
@@ -54,80 +55,66 @@ export interface NavSection {
 }
 
 /**
- * Fonte única da navegação da plataforma.
- * Para ativar um módulo: crie a rota em src/app/(app)/<rota> e remova `comingSoon`.
+ * Todos os módulos da plataforma, na ordem em que aparecem.
+ * Para ativar um módulo: crie a rota em src/app/(app)/<rota> e remova `comingSoon` — ele sobe sozinho
+ * da seção "Em breve" para a lista principal.
  */
+const MODULES: NavItem[] = [
+  { id: "dashboard", label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, accent: "primary" },
+  {
+    id: "finance",
+    label: "Finanças",
+    href: "/financas",
+    icon: Wallet,
+    accent: "success",
+    children: [
+      { id: "finance-transactions", label: "Lançamentos", href: "/financas/lancamentos", icon: ArrowLeftRight },
+      { id: "finance-categories", label: "Categorias", href: "/financas/categorias", icon: Tags },
+      { id: "finance-owners", label: "Responsáveis", href: "/financas/responsaveis", icon: Users },
+      { id: "finance-cards", label: "Cartões", href: "/financas/cartoes", icon: CreditCard },
+      { id: "finance-banks", label: "Bancos", href: "/financas/bancos", icon: Landmark },
+    ],
+  },
+  { id: "chores", label: "Tarefas de casa", href: "/tarefas", icon: House, accent: "warning", comingSoon: true },
+  { id: "calendar", label: "Agenda", href: "/agenda", icon: CalendarDays, accent: "info", comingSoon: true },
+  { id: "notes", label: "Notas", href: "/notas", icon: NotebookPen, accent: "warning" },
+  { id: "reminders", label: "Lembretes", href: "/lembretes", icon: BellRing, accent: "danger", comingSoon: true },
+  {
+    id: "passwords",
+    label: "Senhas",
+    href: "/senhas",
+    icon: KeyRound,
+    accent: "primary",
+    children: [
+      { id: "passwords-list", label: "Senhas", href: "/senhas/lista", icon: KeyRound },
+      { id: "passwords-tags", label: "Tags", href: "/senhas/tags", icon: Tag },
+    ],
+  },
+  { id: "inventory", label: "Estoque", href: "/estoque", icon: Package, accent: "warning", comingSoon: true },
+  {
+    id: "shopping",
+    label: "Listas de compras",
+    href: "/compras",
+    icon: ShoppingCart,
+    accent: "info",
+    children: [
+      { id: "shopping-list", label: "Lista do mês", href: "/compras/lista", icon: ShoppingBasket },
+      { id: "shopping-products", label: "Produtos", href: "/compras/produtos", icon: Boxes },
+      { id: "shopping-categories", label: "Categorias", href: "/compras/categorias", icon: Tags },
+      { id: "shopping-history", label: "Histórico", href: "/compras/historico", icon: History },
+    ],
+  },
+  { id: "workouts", label: "Treinos", href: "/treinos", icon: Dumbbell, accent: "primary", comingSoon: true },
+  { id: "nutrition", label: "Alimentação", href: "/alimentacao", icon: Apple, accent: "success", comingSoon: true },
+  { id: "health", label: "Sono e saúde", href: "/saude", icon: HeartPulse, accent: "danger", comingSoon: true },
+  { id: "notifications", label: "Alertas", href: "/alertas", icon: Bell, accent: "warning", comingSoon: true },
+  { id: "settings", label: "Configurações", href: "/configuracoes", icon: Settings, accent: "primary", comingSoon: true },
+];
+
+/** Fonte única da navegação: módulos disponíveis primeiro, depois os que ainda estão por vir. */
 export const NAVIGATION: NavSection[] = [
-  {
-    items: [{ id: "dashboard", label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, accent: "primary" }],
-  },
-  {
-    title: "Organização",
-    items: [
-      {
-        id: "finance",
-        label: "Finanças",
-        href: "/financas",
-        icon: Wallet,
-        accent: "success",
-        children: [
-          { id: "finance-transactions", label: "Lançamentos", href: "/financas/lancamentos", icon: ArrowLeftRight },
-          { id: "finance-categories", label: "Categorias", href: "/financas/categorias", icon: Tags },
-          { id: "finance-owners", label: "Responsáveis", href: "/financas/responsaveis", icon: Users },
-          { id: "finance-cards", label: "Cartões", href: "/financas/cartoes", icon: CreditCard },
-          { id: "finance-banks", label: "Bancos", href: "/financas/bancos", icon: Landmark },
-        ],
-      },
-      { id: "chores", label: "Tarefas de casa", href: "/tarefas", icon: House, accent: "warning", comingSoon: true },
-      { id: "calendar", label: "Agenda", href: "/agenda", icon: CalendarDays, accent: "info", comingSoon: true },
-      { id: "reminders", label: "Lembretes", href: "/lembretes", icon: BellRing, accent: "danger", comingSoon: true },
-      {
-        id: "passwords",
-        label: "Senhas",
-        href: "/senhas",
-        icon: KeyRound,
-        accent: "primary",
-        children: [
-          { id: "passwords-list", label: "Senhas", href: "/senhas/lista", icon: KeyRound },
-          { id: "passwords-tags", label: "Tags", href: "/senhas/tags", icon: Tag },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Casa",
-    items: [
-      { id: "inventory", label: "Estoque", href: "/estoque", icon: Package, accent: "warning", comingSoon: true },
-      {
-        id: "shopping",
-        label: "Listas de compras",
-        href: "/compras",
-        icon: ShoppingCart,
-        accent: "info",
-        children: [
-          { id: "shopping-list", label: "Lista do mês", href: "/compras/lista", icon: ShoppingBasket },
-          { id: "shopping-products", label: "Produtos", href: "/compras/produtos", icon: Boxes },
-          { id: "shopping-categories", label: "Categorias", href: "/compras/categorias", icon: Tags },
-          { id: "shopping-history", label: "Histórico", href: "/compras/historico", icon: History },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Saúde",
-    items: [
-      { id: "workouts", label: "Treinos", href: "/treinos", icon: Dumbbell, accent: "primary", comingSoon: true },
-      { id: "nutrition", label: "Alimentação", href: "/alimentacao", icon: Apple, accent: "success", comingSoon: true },
-      { id: "health", label: "Sono e saúde", href: "/saude", icon: HeartPulse, accent: "danger", comingSoon: true },
-    ],
-  },
-  {
-    title: "Sistema",
-    items: [
-      { id: "notifications", label: "Alertas", href: "/alertas", icon: Bell, accent: "warning", comingSoon: true },
-      { id: "settings", label: "Configurações", href: "/configuracoes", icon: Settings, accent: "primary", comingSoon: true },
-    ],
-  },
+  { items: MODULES.filter((m) => !m.comingSoon) },
+  { title: "Em breve", items: MODULES.filter((m) => m.comingSoon) },
 ];
 
 /** A rota atual é `href` ou uma subpágina dele. */
