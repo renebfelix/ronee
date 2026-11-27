@@ -7,6 +7,8 @@ import type { Category, Occurrence, Responsible, ShareDoc, ShareMonthDoc } from 
 import { buildShareMonths, hashOf, summarize } from "../lib/share";
 
 interface Args {
+  /** false: não lê nem grava nada (outro provider já cuida da sincronização). */
+  enabled?: boolean;
   uid: string;
   ownerName: string | null;
   loading: boolean;
@@ -37,24 +39,23 @@ const comparable = (s: Omit<ShareDoc, "updatedAt"> & { updatedAt?: number }) => 
  * Mantém `shares/{shareId}` (e os meses) em dia com os dados do dono.
  * A página pública não acessa `users/…`: ela só lê esse espelho, filtrado por responsável.
  */
-export function useShareSync({ uid, ownerName, loading, responsibles, occurrences, catById, methodName }: Args) {
+export function useShareSync({ enabled = true, uid, ownerName, loading, responsibles, occurrences, catById, methodName }: Args) {
   const [shares, setShares] = useState<Record<string, ShareDoc> | null>(null);
   const running = useRef(false);
   const again = useRef(false);
   const latest = useRef<(() => Promise<void>) | null>(null);
 
-  useEffect(
-    () =>
-      onSnapshot(
-        query(collection(getDb(), "shares"), where("ownerUid", "==", uid)),
-        (snap) => setShares(Object.fromEntries(snap.docs.map((d) => [d.id, d.data() as ShareDoc]))),
-        (e) => console.error("Falha ao ler os links de responsáveis", e),
-      ),
-    [uid],
-  );
+  useEffect(() => {
+    if (!enabled) return;
+    return onSnapshot(
+      query(collection(getDb(), "shares"), where("ownerUid", "==", uid)),
+      (snap) => setShares(Object.fromEntries(snap.docs.map((d) => [d.id, d.data() as ShareDoc]))),
+      (e) => console.error("Falha ao ler os links de responsáveis", e),
+    );
+  }, [uid, enabled]);
 
   useEffect(() => {
-    if (loading || !shares) return;
+    if (!enabled || loading || !shares) return;
     const db = getDb();
 
     const sync = async () => {
@@ -138,5 +139,5 @@ export function useShareSync({ uid, ownerName, loading, responsibles, occurrence
     latest.current = sync;
     const t = setTimeout(sync, 1000);
     return () => clearTimeout(t);
-  }, [uid, ownerName, loading, shares, responsibles, occurrences, catById, methodName]);
+  }, [enabled, uid, ownerName, loading, shares, responsibles, occurrences, catById, methodName]);
 }

@@ -106,8 +106,12 @@ function clean<T>(value: T): T {
   return value;
 }
 
-/** Dados do módulo de Finanças em tempo real. Envolve todas as rotas em /financas. */
-export function FinanceDataProvider({ children }: { children: ReactNode }) {
+/**
+ * Dados do módulo de Finanças em tempo real. Envolve todas as rotas em /financas.
+ * `passive`: só lê, sem criar as categorias padrão nem sincronizar os links públicos. Use quando
+ * outro provider de Finanças pode estar montado ao mesmo tempo (ex.: cards do dashboard).
+ */
+export function FinanceDataProvider({ children, passive = false }: { children: ReactNode; passive?: boolean }) {
   const { user } = useAuth();
   const uid = user!.uid;
   const [raw, setRaw] = useState<Raw>(EMPTY);
@@ -143,7 +147,7 @@ export function FinanceDataProvider({ children }: { children: ReactNode }) {
 
   /* Categorias padrão no primeiro acesso ao módulo */
   useEffect(() => {
-    if (seeded.current) return;
+    if (passive || seeded.current) return;
     seeded.current = true;
     (async () => {
       const snap = await getDoc(moduleDoc());
@@ -156,7 +160,7 @@ export function FinanceDataProvider({ children }: { children: ReactNode }) {
       batch.set(moduleDoc(), { seeded: true }, { merge: true });
       await batch.commit();
     })().catch(() => setError(true));
-  }, [moduleDoc, colRef]);
+  }, [moduleDoc, colRef, passive]);
 
   const loading = COLS.some((c) => !ready[c]);
 
@@ -278,6 +282,7 @@ export function FinanceDataProvider({ children }: { children: ReactNode }) {
   // Espelho público (páginas /fatura/…) de cada responsável.
   const methodName = useCallback((o: Occurrence) => methodOf(o.tx).name, [methodOf]);
   useShareSync({
+    enabled: !passive,
     uid,
     ownerName: user?.displayName ?? null,
     loading,

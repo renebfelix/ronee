@@ -1,0 +1,392 @@
+@use "abstracts" as *;
+
+.grid {
+  display: grid;
+  gap: $space-4;
+  grid-template-columns: 1fr;
+  align-items: start;
+
+  @include up(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up(xl) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.wide {
+  @include up(xl) {
+    grid-column: span 2;
+  }
+}
+
+// ───────── Cabeçalho do card ─────────
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+}
+
+.cardIcon {
+  @include flex-center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: $radius-md;
+}
+
+@each $accent in primary, success, warning, danger, info {
+  .accent-#{$accent} {
+    background: var(--color-#{$accent}-soft);
+    color: var(--color-#{$accent});
+  }
+}
+
+.cardTitle {
+  flex: 1;
+  min-width: 0;
+  font-size: $font-md;
+  font-weight: $weight-semibold;
+  @include truncate;
+}
+
+.open {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  padding: $space-1 $space-2;
+  border-radius: $radius-sm;
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+  color: var(--color-primary);
+  @include transition(background);
+  @include focus-visible;
+
+  &:hover {
+    background: var(--color-primary-soft);
+  }
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  min-width: 0;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: $space-8 0;
+  color: var(--color-primary);
+}
+
+// ───────── Indicadores ─────────
+
+.stats {
+  display: grid;
+  gap: $space-2;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+}
+
+.stat {
+  padding: $space-3;
+  border-radius: $radius-md;
+  background: var(--color-surface-2);
+  min-width: 0;
+
+  dt {
+    font-size: $font-xs;
+    color: var(--color-text-muted);
+    @include truncate;
+  }
+
+  dd {
+    margin-top: $space-1;
+    font-size: $font-lg;
+    font-weight: $weight-semibold;
+    font-variant-numeric: tabular-nums;
+    @include truncate;
+  }
+}
+
+@each $tone in primary, success, warning, danger, info {
+  .tone-#{$tone} {
+    color: var(--color-#{$tone});
+  }
+}
+
+// ───────── Barra de progresso ─────────
+
+.meter {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.meterHead {
+  display: flex;
+  justify-content: space-between;
+  gap: $space-2;
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+}
+
+.meterHint {
+  color: var(--color-text-muted);
+  font-weight: $weight-regular;
+  font-variant-numeric: tabular-nums;
+}
+
+.meterTrack {
+  height: 8px;
+  border-radius: $radius-full;
+  background: var(--color-surface-2);
+  overflow: hidden;
+}
+
+.meterBar {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  @include transition(width);
+}
+
+.bar-success {
+  background: var(--color-success);
+}
+
+.bar-warning {
+  background: var(--color-warning);
+}
+
+.bar-danger {
+  background: var(--color-danger);
+}
+
+// ───────── Listas ─────────
+
+.listBlock {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.listTitle {
+  font-size: $font-xs;
+  font-weight: $weight-semibold;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0 (-$space-2);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-2;
+  border-radius: $radius-sm;
+  color: inherit;
+  text-decoration: none;
+  @include transition(background);
+  @include focus-visible;
+}
+
+a.item:hover {
+  background: var(--color-surface-2);
+}
+
+.dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: $radius-full;
+}
+
+.itemText {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.itemTitle {
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+  @include truncate;
+}
+
+.itemMeta {
+  font-size: $font-xs;
+  color: var(--color-text-muted);
+  @include truncate;
+}
+
+.itemAside {
+  flex-shrink: 0;
+  font-size: $font-xs;
+  font-weight: $weight-medium;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+
+  &.tone-danger,
+  &.tone-warning,
+  &.tone-info,
+  &.tone-success {
+    font-weight: $weight-semibold;
+  }
+}
+
+.empty {
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+}
+
+.note {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+}
+
+// ───────── Destaque (viagem) ─────────
+
+.highlight {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: $space-3 $space-4;
+  border-radius: $radius-md;
+  background: var(--color-info-soft);
+  color: inherit;
+  text-decoration: none;
+  @include transition(transform);
+  @include focus-visible;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  strong {
+    font-size: $font-md;
+    @include truncate;
+  }
+}
+
+.highlightLabel {
+  font-size: $font-xs;
+  font-weight: $weight-semibold;
+  color: var(--color-info);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.highlightMeta {
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+  @include truncate;
+}
+
+// ───────── Modo "Organizar" ─────────
+
+.editing {
+  outline: 2px dashed var(--color-primary-soft);
+  outline-offset: 2px;
+  cursor: grab;
+  user-select: none;
+
+  // Os resumos ficam só para visualização enquanto se organiza.
+  .cardBody {
+    pointer-events: none;
+  }
+}
+
+.dragging {
+  opacity: 0.45;
+  cursor: grabbing;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  flex-shrink: 0;
+}
+
+.grip {
+  display: none;
+  color: var(--color-text-subtle);
+
+  @include up(md) {
+    display: inline-flex;
+  }
+}
+
+.tray {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  margin-bottom: $space-4;
+  padding: $space-4;
+  border: 1px dashed var(--color-border);
+  border-radius: $radius-lg;
+  background: var(--color-surface-2);
+}
+
+.trayHint {
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+}
+
+.trayItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.trayItem {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-1 $space-3 $space-1 $space-1;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-full;
+  background: var(--color-surface);
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+  color: var(--color-text);
+  cursor: pointer;
+  @include transition(border-color, box-shadow);
+  @include focus-visible;
+
+  > span {
+    width: 28px;
+    height: 28px;
+    border-radius: $radius-full;
+  }
+
+  svg:last-child {
+    color: var(--color-primary);
+  }
+
+  &:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+  }
+}
