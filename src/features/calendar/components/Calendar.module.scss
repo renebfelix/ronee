@@ -1,0 +1,813 @@
+@use "abstracts" as *;
+
+// ───────── Barra de ferramentas ─────────
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-2 $space-3;
+  margin-bottom: $space-3;
+}
+
+.monthNav {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  height: 40px;
+  padding: 0 $space-1;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+
+  strong {
+    min-width: 150px;
+    text-align: center;
+    font-size: $font-sm;
+  }
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  flex: 1 1 180px;
+  max-width: 320px;
+  height: 40px;
+  padding: 0 $space-3;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  color: var(--color-text-subtle);
+  @include transition(border-color, box-shadow);
+
+  &:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-soft);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: none;
+    outline: none;
+    font-size: $font-sm;
+    color: var(--color-text);
+  }
+
+  button {
+    @include flex-center;
+    color: var(--color-text-muted);
+  }
+}
+
+.viewToggle {
+  margin-left: auto;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+  margin-bottom: $space-4;
+}
+
+// Chip de categoria (filtro e formulário). A cor vem de `--cat`.
+.catChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 $space-3;
+  border-radius: $radius-full;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+  @include transition(background-color, border-color, color);
+  @include focus-visible;
+
+  svg {
+    color: var(--color-text-subtle);
+  }
+
+  &:hover {
+    border-color: var(--cat);
+  }
+}
+
+.catChipOn {
+  border-color: color-mix(in srgb, var(--cat) 45%, transparent);
+  background: color-mix(in srgb, var(--cat) 12%, var(--color-surface));
+  color: var(--color-text);
+
+  svg {
+    color: var(--cat);
+  }
+}
+
+// ───────── Layout ─────────
+
+.layout {
+  display: grid;
+  gap: $space-4;
+  align-items: start;
+
+  @include up(lg) {
+    grid-template-columns: minmax(0, 1fr) 320px;
+  }
+}
+
+.main {
+  overflow: hidden;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+// ───────── Grade do mês ─────────
+
+.grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.gridHead {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+
+  span {
+    padding: $space-2;
+    text-align: center;
+    font-size: $font-xs;
+    font-weight: $weight-semibold;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+}
+
+.gridBody {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-auto-rows: minmax(58px, auto);
+
+  @include up(md) {
+    grid-auto-rows: minmax(112px, auto);
+  }
+}
+
+.cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 6px 2px;
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  outline: none;
+  @include transition(background-color);
+
+  &:nth-child(7n) {
+    border-right: 0;
+  }
+
+  &:nth-last-child(-n + 7) {
+    border-bottom: 0;
+  }
+
+  &:hover {
+    background: var(--color-surface-2);
+  }
+
+  &:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--color-primary);
+  }
+
+  @include up(md) {
+    align-items: stretch;
+    padding: 6px;
+  }
+}
+
+.cellOutside {
+  .dayNum {
+    color: var(--color-text-subtle);
+  }
+
+  .pills,
+  .dots {
+    opacity: 0.55;
+  }
+}
+
+.cellSelected {
+  background: var(--color-primary-soft);
+
+  &:hover {
+    background: var(--color-primary-soft);
+  }
+}
+
+.dayNum {
+  @include flex-center;
+  width: 28px;
+  height: 28px;
+  border-radius: $radius-full;
+  font-size: $font-sm;
+  font-weight: $weight-semibold;
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+
+.dayToday {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.pills {
+  display: none;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+
+  @include up(md) {
+    display: flex;
+  }
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  text-align: left;
+  color: var(--color-text);
+  @include transition(background-color);
+  @include focus-visible;
+
+  &:hover {
+    background: color-mix(in srgb, var(--cat) 14%, transparent);
+  }
+}
+
+.pillBlock {
+  background: color-mix(in srgb, var(--cat) 18%, var(--color-surface));
+  border-left: 3px solid var(--cat);
+  font-weight: $weight-medium;
+
+  &:hover {
+    background: color-mix(in srgb, var(--cat) 28%, var(--color-surface));
+  }
+}
+
+.pillDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cat);
+  flex-shrink: 0;
+}
+
+.pillTime {
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.pillTitle {
+  @include truncate;
+  flex: 1;
+  min-width: 0;
+}
+
+.pillRepeat {
+  flex-shrink: 0;
+  color: var(--color-text-subtle);
+}
+
+.more {
+  padding: 0 6px;
+  font-size: 0.72rem;
+  font-weight: $weight-medium;
+  color: var(--color-text-muted);
+}
+
+.dots {
+  display: flex;
+  gap: 3px;
+
+  i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  @include up(md) {
+    display: none;
+  }
+}
+
+// ───────── Listas de eventos ─────────
+
+.items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  width: 100%;
+  padding: $space-3 $space-4;
+  text-align: left;
+  @include transition(background-color);
+  @include focus-visible;
+
+  &:hover {
+    background: var(--color-surface-2);
+  }
+}
+
+.itemBar {
+  align-self: stretch;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--cat);
+  flex-shrink: 0;
+}
+
+.itemTime {
+  width: 86px;
+  flex-shrink: 0;
+  padding-top: 1px;
+  font-size: $font-xs;
+  font-weight: $weight-semibold;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.itemMain {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.itemTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: $font-sm;
+  font-weight: $weight-semibold;
+  color: var(--color-text);
+
+  svg {
+    flex-shrink: 0;
+    color: var(--color-text-subtle);
+  }
+}
+
+.itemMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px $space-3;
+  font-size: $font-xs;
+  color: var(--color-text-muted);
+}
+
+.itemCat,
+.itemLoc {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.itemCat svg {
+  color: var(--cat);
+}
+
+.itemLoc {
+  @include truncate;
+  max-width: 100%;
+}
+
+.listView {
+  display: flex;
+  flex-direction: column;
+}
+
+.listDay {
+  border-bottom: 1px solid var(--color-border);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  h3 {
+    padding: $space-3 $space-4 0;
+    font-size: $font-sm;
+    font-weight: $weight-semibold;
+    color: var(--color-text-muted);
+  }
+}
+
+.listToday {
+  color: var(--color-primary) !important;
+}
+
+// ───────── Painéis laterais ─────────
+
+.panel {
+  overflow: hidden;
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+  padding: $space-4 $space-4 $space-2;
+
+  h2 {
+    font-size: $font-md;
+    font-weight: $weight-semibold;
+  }
+}
+
+.panelKicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: $font-xs;
+  font-weight: $weight-semibold;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.panelEmpty {
+  padding: $space-2 $space-4 $space-4;
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+}
+
+.upcoming {
+  border-top: 1px solid var(--color-border);
+}
+
+.upcomingDate {
+  padding: $space-2 $space-4 0;
+  font-size: $font-xs;
+  font-weight: $weight-semibold;
+  color: var(--color-text-muted);
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+.addLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+  color: var(--color-primary);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// ───────── Formulário ─────────
+
+.switchRow {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-3;
+  align-self: flex-start;
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+  cursor: pointer;
+
+  input {
+    @include visually-hidden;
+  }
+
+  input:focus-visible + .switch {
+    @include focus-ring;
+  }
+
+  input:checked + .switch {
+    background: var(--color-primary);
+
+    &::after {
+      transform: translateX(16px);
+    }
+  }
+}
+
+.switch {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: $radius-full;
+  background: var(--color-border);
+  @include transition(background-color);
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: var(--shadow-sm);
+    @include transition(transform);
+  }
+}
+
+.whenGrid {
+  display: grid;
+  gap: $space-4;
+
+  @include up(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.dateTime {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: $space-2;
+
+  > :only-child {
+    grid-column: 1 / -1;
+  }
+}
+
+.catPick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.withIcon {
+  position: relative;
+
+  svg {
+    position: absolute;
+    left: $space-3;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-subtle);
+    pointer-events: none;
+  }
+
+  input {
+    padding-left: 40px;
+  }
+}
+
+.repeatBox {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  padding: $space-3;
+  border-radius: $radius-md;
+  background: var(--color-surface-2);
+}
+
+.inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-2;
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+}
+
+.small {
+  width: 76px !important;
+}
+
+.medium {
+  width: 170px !important;
+}
+
+.weekdayPick {
+  display: flex;
+  gap: 6px;
+}
+
+.weekdayBtn {
+  @include flex-center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: $font-sm;
+  font-weight: $weight-semibold;
+  color: var(--color-text-muted);
+  @include transition(background-color, color, border-color);
+  @include focus-visible;
+}
+
+.weekdayOn {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+}
+
+// ───────── Detalhes ─────────
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.detailCat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: $radius-full;
+  background: color-mix(in srgb, var(--cat) 14%, transparent);
+  color: var(--cat);
+  font-size: $font-xs;
+  font-weight: $weight-semibold;
+}
+
+.detailRow {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  font-size: $font-sm;
+
+  svg {
+    flex-shrink: 0;
+    color: var(--color-text-subtle);
+  }
+
+  a {
+    color: var(--color-primary);
+    word-break: break-word;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.muted {
+  font-style: normal;
+  color: var(--color-text-muted);
+}
+
+.detailDescription {
+  padding-top: $space-3;
+  border-top: 1px solid var(--color-border);
+  font-size: $font-sm;
+}
+
+// ───────── Escopo de série ─────────
+
+.scopeList {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.scopeBtn {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: $space-3 $space-4;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  text-align: left;
+  @include transition(border-color, background-color);
+  @include focus-visible;
+
+  strong {
+    font-size: $font-sm;
+  }
+
+  span {
+    font-size: $font-xs;
+    color: var(--color-text-muted);
+  }
+
+  &:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+  }
+}
+
+.scopeDanger:hover {
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+.notice {
+  margin: (-$space-2) 0 $space-3;
+  font-size: $font-xs;
+  color: var(--color-text-muted);
+}
+
+// ───────── Lembretes e notificações ─────────
+
+.reminders {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-2;
+}
+
+.reminderChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 6px 0 $space-3;
+  border-radius: $radius-full;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+
+  button {
+    @include flex-center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    color: inherit;
+    @include focus-visible;
+
+    &:hover {
+      background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+    }
+  }
+}
+
+.reminderAdd {
+  width: auto !important;
+  height: 32px !important;
+  font-size: $font-sm !important;
+  border-radius: $radius-full !important;
+}
+
+.muted {
+  color: var(--color-text-muted);
+  font-size: $font-sm;
+}
+
+.pushStatus {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-3;
+  border-radius: $radius-md;
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  font-size: $font-sm;
+  font-weight: $weight-medium;
+}
+
+.pushStatusOn {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}

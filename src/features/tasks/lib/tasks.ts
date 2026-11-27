@@ -61,6 +61,7 @@ export const CATEGORY_ICONS: Record<string, LucideIcon> = {
   award: Award,
   smile: Smile,
   tag: Tag,
+  flag: Flag,
 };
 
 export const CATEGORY_COLORS = [

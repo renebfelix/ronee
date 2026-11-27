@@ -4,10 +4,10 @@ import { getFirestore } from "firebase-admin/firestore";
 import { getMessaging } from "firebase-admin/messaging";
 
 // Conta de serviço (Configurações do projeto → Contas de serviço → Gerar nova chave privada),
-// em JSON puro ou em base64, na variável RONEE_FIREBASE_SERVICE_ACCOUNT.
+// em JSON puro ou em base64, na variável RONEE_NEXT_PUBLIC_FIREBASE_SERVICE_ACCOUNT.
 function credentials() {
-  const raw = process.env.RONEE_FIREBASE_SERVICE_ACCOUNT;
-  if (!raw) throw new Error("RONEE_FIREBASE_SERVICE_ACCOUNT não configurada");
+  const raw = process.env.RONEE_NEXT_PUBLIC_FIREBASE_SERVICE_ACCOUNT;
+  if (!raw) throw new Error("RONEE_NEXT_PUBLIC_FIREBASE_SERVICE_ACCOUNT não configurada");
   const json = raw.trim().startsWith("{") ? raw : Buffer.from(raw, "base64").toString("utf8");
   return cert(JSON.parse(json));
 }

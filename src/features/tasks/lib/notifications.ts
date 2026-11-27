@@ -1,5 +1,5 @@
 import { deleteDoc, doc, setDoc } from "firebase/firestore";
-import { deleteToken, getMessaging, getToken, isSupported } from "firebase/messaging";
+import { getMessaging, getToken, isSupported } from "firebase/messaging";
 import { getDb, getFirebaseApp } from "@/lib/firebase";
 
 /**
@@ -52,14 +52,19 @@ async function registration() {
   return navigator.serviceWorker.ready;
 }
 
-export async function enablePush(uid: string, hour: number): Promise<PushSettings> {
+/** Pede permissão e devolve o token FCM deste aparelho (o mesmo para Tarefas e Agenda). */
+export async function requestPushToken() {
   const permission = await Notification.requestPermission();
   if (permission !== "granted") throw new Error("permission-denied");
 
-  const token = await getToken(getMessaging(getFirebaseApp()), {
+  return getToken(getMessaging(getFirebaseApp()), {
     vapidKey,
     serviceWorkerRegistration: await registration(),
   });
+}
+
+export async function enablePush(uid: string, hour: number): Promise<PushSettings> {
+  const token = await requestPushToken();
   await setDoc(
     deviceDoc(uid, token),
     {
@@ -75,17 +80,23 @@ export async function enablePush(uid: string, hour: number): Promise<PushSetting
   return settings;
 }
 
+/**
+ * Só apaga o aparelho deste módulo. O token FCM não é revogado porque a Agenda usa o mesmo
+ * token para os lembretes de eventos.
+ */
 export async function disablePush(uid: string, settings: PushSettings) {
   savePushSettings(null);
   await deleteDoc(deviceDoc(uid, settings.token));
-  await deleteToken(getMessaging(getFirebaseApp())).catch(() => {});
 }
 
 /** Mostra uma notificação local para conferir se o aparelho está exibindo os avisos. */
-export async function showTestNotification() {
+export async function showTestNotification(
+  title = "Ronee — Tarefas",
+  body = "Tudo certo! Você vai receber o resumo das suas tarefas aqui.",
+) {
   const reg = await registration();
-  await reg.showNotification("Ronee — Tarefas", {
-    body: "Tudo certo! Você vai receber o resumo das suas tarefas aqui.",
+  await reg.showNotification(title, {
+    body,
     icon: "/icons/icon-192.png",
     badge: "/icons/icon-192.png",
   });

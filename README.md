@@ -72,11 +72,22 @@ no primeiro acesso), prioridade, prazo, busca, filtros e ordenação.
   1. **Cloud Messaging → Certificados push da Web** → gere o par e coloque a chave pública em
      `RONEE_NEXT_PUBLIC_FIREBASE_VAPID_KEY`.
   2. **Contas de serviço → Gerar nova chave privada** → JSON (em uma linha ou base64) em
-     `RONEE_FIREBASE_SERVICE_ACCOUNT`, só no servidor.
-  3. Defina `RONEE_CRON_SECRET` com um valor aleatório.
+     `RONEE_NEXT_PUBLIC_FIREBASE_SERVICE_ACCOUNT`, só no servidor.
+  3. Defina `RONEE_NEXT_PUBLIC_CRON_SECRET` com um valor aleatório.
   4. Agende a chamada: o workflow `.github/workflows/tasks-reminders.yml` usa a variável
-     `RONEE_TASKS_REMINDERS_URL` e o segredo `RONEE_CRON_SECRET` do GitHub Actions. Qualquer
-     agendador serve: `curl -H "Authorization: Bearer $RONEE_CRON_SECRET" https://SEU-DOMINIO/api/cron/tarefas`.
+     `RONEE_TASKS_REMINDERS_URL` e o segredo `RONEE_NEXT_PUBLIC_CRON_SECRET` do GitHub Actions. Qualquer
+     agendador serve: `curl -H "Authorization: Bearer $RONEE_NEXT_PUBLIC_CRON_SECRET" https://SEU-DOMINIO/api/cron/tarefas`.
+
+### Agenda — lembretes de eventos
+
+- Cada evento tem **Lembretes** (ex.: na hora, 10 min antes, na véspera; em eventos de dia inteiro, às 9h).
+  O botão "Notificações" da Agenda liga os avisos no aparelho (`.../calendar/devices/{token}`, separado
+  do resumo de Tarefas, mas com o mesmo token FCM).
+- `GET /api/cron/agenda` expande os eventos (inclusive recorrentes) e envia os lembretes vencidos nos
+  últimos 30 min. Cada envio é registrado em `.../calendar/sent/` para nunca repetir.
+- Usa a mesma configuração do push de Tarefas (VAPID, conta de serviço e `RONEE_NEXT_PUBLIC_CRON_SECRET`), mas precisa
+  rodar **a cada 5 minutos**: o workflow `.github/workflows/calendar-reminders.yml` usa a variável
+  `RONEE_CALENDAR_REMINDERS_URL` (ex.: `https://SEU-DOMINIO/api/cron/agenda`).
 
 ## Scripts
 

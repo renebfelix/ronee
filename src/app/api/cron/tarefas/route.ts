@@ -51,7 +51,7 @@ function buildMessage(tasks: PendingTask[], date: string) {
  * Aparelhos ficam em `users/{uid}/modules/tasks/devices/{token}`.
  */
 export async function GET(request: Request) {
-  const secret = process.env.RONEE_CRON_SECRET;
+  const secret = process.env.RONEE_NEXT_PUBLIC_CRON_SECRET;
   if (!secret || request.headers.get("authorization") !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }

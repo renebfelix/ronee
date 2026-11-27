@@ -4,6 +4,7 @@ import {
   Bell,
   Boxes,
   CalendarDays,
+  CalendarRange,
   CreditCard,
   Dumbbell,
   HeartPulse,
@@ -77,7 +78,17 @@ const MODULES: NavItem[] = [
     ],
   },
   { id: "chores", label: "Tarefas de casa", href: "/tarefas-de-casa", icon: House, accent: "warning", comingSoon: true },
-  { id: "calendar", label: "Agenda", href: "/agenda", icon: CalendarDays, accent: "info", comingSoon: true },
+  {
+    id: "calendar",
+    label: "Agenda",
+    href: "/agenda",
+    icon: CalendarDays,
+    accent: "info",
+    children: [
+      { id: "calendar-month", label: "Calendário", href: "/agenda/calendario", icon: CalendarRange },
+      { id: "calendar-categories", label: "Categorias", href: "/agenda/categorias", icon: Tags },
+    ],
+  },
   { id: "notes", label: "Notas", href: "/notas", icon: NotebookPen, accent: "warning" },
   {
     id: "tasks",
