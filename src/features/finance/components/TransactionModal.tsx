@@ -36,9 +36,18 @@ interface Props {
   initialType?: TransactionType;
   /** Mês ("YYYY-MM") da ocorrência aberta para edição: em fixas, permite alterar só esse mês. */
   editingMonth?: string;
+  /** Novo lançamento: categoria já escolhida (ex.: gastos de uma viagem). */
+  initialCategoryId?: string;
 }
 
-export function TransactionModal({ open, onClose, editing, initialType = "EXPENSE", editingMonth }: Props) {
+export function TransactionModal({
+  open,
+  onClose,
+  editing,
+  initialType = "EXPENSE",
+  editingMonth,
+  initialCategoryId = "",
+}: Props) {
   const { user } = useAuth();
   const d = useFinance();
 
@@ -138,7 +147,7 @@ export function TransactionModal({ open, onClose, editing, initialType = "EXPENS
       setTitle("");
       setAmount("");
       setDate(todayStr());
-      setCategoryId("");
+      setCategoryId(initialCategoryId);
       const [mt, mid] = defaultMethod(initialType);
       setMethodType(mt);
       setMethodId(mid);
@@ -155,7 +164,7 @@ export function TransactionModal({ open, onClose, editing, initialType = "EXPENS
       setEndDate("");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, editing, editingMonth, initialType]);
+  }, [open, editing, editingMonth, initialType, initialCategoryId]);
 
   const categories = byName(d.categories.filter((c) => c.type === type && (c.isActive || c.id === categoryId)));
   const value = parseMoney(amount);

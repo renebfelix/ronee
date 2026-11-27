@@ -28,6 +28,7 @@
     "exceljs": "^4.4.0",
     "firebase": "^13.4.0",
     "firebase-admin": "^14.5.1",
+    "leaflet": "^1.9.4",
     "lowlight": "^3.3.0",
     "lucide-react": "^1.79.0",
     "next": "16.4.6",
@@ -36,6 +37,7 @@
     "recharts": "^3.11.1"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.9.23",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

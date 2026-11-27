@@ -15,8 +15,10 @@ import {
   LayoutDashboard,
   ListChecks,
   ListTodo,
+  MapPinned,
   NotebookPen,
   Package,
+  Plane,
   Settings,
   ShoppingBasket,
   ShoppingCart,
@@ -87,6 +89,17 @@ const MODULES: NavItem[] = [
     children: [
       { id: "calendar-month", label: "Calendário", href: "/agenda/calendario", icon: CalendarRange },
       { id: "calendar-categories", label: "Categorias", href: "/agenda/categorias", icon: Tags },
+    ],
+  },
+  {
+    id: "travel",
+    label: "Viagens",
+    href: "/viagens",
+    icon: Plane,
+    accent: "info",
+    children: [
+      { id: "travel-trips", label: "Viagens", href: "/viagens/lista", icon: MapPinned },
+      { id: "travel-categories", label: "Categorias", href: "/viagens/categorias", icon: Tags },
     ],
   },
   { id: "notes", label: "Notas", href: "/notas", icon: NotebookPen, accent: "warning" },

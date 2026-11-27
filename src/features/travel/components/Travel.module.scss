@@ -1,0 +1,447 @@
+@use "abstracts" as *;
+
+// ───────── Lista de viagens ─────────
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+
+  & + & {
+    margin-top: $space-8;
+  }
+}
+
+.sectionTitle {
+  font-size: $font-sm;
+  font-weight: $weight-semibold;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tripGrid {
+  display: grid;
+  gap: $space-4;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.tripCard {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  padding: $space-5;
+  text-decoration: none;
+  color: inherit;
+  @include surface;
+  @include transition(border-color, box-shadow, transform);
+  @include focus-visible;
+
+  &:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-md, var(--shadow-sm));
+  }
+}
+
+.tripCardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $space-3;
+}
+
+.tripName {
+  font-size: $font-lg;
+  font-weight: $weight-semibold;
+  line-height: 1.3;
+}
+
+.muted {
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+}
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-2 $space-4;
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+
+  > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+.avatars {
+  display: inline-flex;
+
+  > * + * {
+    margin-left: -8px;
+  }
+
+  > * {
+    box-shadow: 0 0 0 2px var(--color-surface);
+    border-radius: $radius-full;
+  }
+}
+
+// ───────── Detalhe da viagem ─────────
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  margin-bottom: $space-3;
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-3 $space-6;
+  margin-bottom: $space-4;
+}
+
+.tabs {
+  margin-bottom: $space-4;
+}
+
+.layout {
+  display: grid;
+  gap: $space-4;
+
+  @include up(lg) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    align-items: start;
+  }
+}
+
+.stickyMap {
+  @include up(lg) {
+    position: sticky;
+    top: calc(#{$topbar-height} + #{$space-4});
+  }
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-2 $space-3;
+  margin-bottom: $space-3;
+}
+
+.filterChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.filterChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px $space-3;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-full;
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+  @include transition(background-color, border-color, color);
+
+  &:hover {
+    border-color: var(--chip, var(--color-primary));
+  }
+}
+
+.filterChipOn {
+  border-color: var(--chip, var(--color-primary));
+  color: var(--chip, var(--color-primary));
+  background: color-mix(in srgb, var(--chip, var(--color-primary)) 12%, transparent);
+}
+
+// Lugares
+.places {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.place {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  padding: $space-3 $space-4;
+  cursor: pointer;
+  @include transition(background-color);
+
+  & + & {
+    border-top: 1px solid var(--color-border);
+  }
+
+  &:hover {
+    background: var(--color-surface-2);
+  }
+}
+
+.placeOn {
+  background: var(--color-primary-soft);
+
+  &:hover {
+    background: var(--color-primary-soft);
+  }
+}
+
+.placeMain {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.placeName {
+  font-weight: $weight-semibold;
+  overflow-wrap: anywhere;
+}
+
+.placeVisited {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.placeDesc {
+  margin-top: $space-1;
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+  max-height: 4.5em;
+  overflow: hidden;
+}
+
+.placeActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.visitBtn {
+  @include flex-center;
+  width: 24px;
+  height: 24px;
+  margin-top: 8px;
+  flex-shrink: 0;
+  border: 2px solid var(--color-border);
+  border-radius: $radius-full;
+  color: transparent;
+  @include transition(background-color, border-color, color);
+  @include focus-visible;
+
+  &:hover {
+    border-color: var(--color-success);
+  }
+}
+
+.visitOn {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: #fff;
+}
+
+// Gastos
+.totals {
+  display: grid;
+  gap: $space-3;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  margin-bottom: $space-4;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: $space-3 $space-4;
+  border-radius: $radius-md;
+  background: var(--color-surface-2);
+
+  strong {
+    font-size: $font-lg;
+  }
+}
+
+.catLink {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+}
+
+// ───────── Mapa ─────────
+
+.map {
+  width: 100%;
+  height: 460px;
+  border-radius: $radius-lg;
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  background: var(--color-surface-2);
+  // Os painéis do Leaflet usam z-index alto: isola o mapa para ficar abaixo de modais e menus.
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+
+  @include up(lg) {
+    height: 600px;
+  }
+}
+
+.mapSmall {
+  height: 260px;
+
+  @include up(lg) {
+    height: 300px;
+  }
+}
+
+.mapPick {
+  cursor: crosshair;
+
+  :global(.leaflet-grab) {
+    cursor: crosshair;
+  }
+}
+
+.pinWrap {
+  background: none;
+  border: 0;
+}
+
+.pin {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: var(--pin);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 35%);
+  transition: transform $duration-fast $ease;
+
+  svg {
+    transform: rotate(45deg);
+  }
+}
+
+.pinMuted {
+  opacity: 0.55;
+  filter: saturate(0.6);
+}
+
+.pinSelected {
+  transform: rotate(-45deg) scale(1.2);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--pin) 35%, transparent),
+    0 2px 8px rgb(0 0 0 / 40%);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2 $space-4;
+  margin-top: $space-3;
+  font-size: $font-sm;
+  color: var(--color-text-muted);
+
+  > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: $radius-full;
+  flex-shrink: 0;
+}
+
+// ───────── Formulário de lugar ─────────
+
+.searchRow {
+  display: flex;
+  gap: $space-2;
+
+  > input {
+    flex: 1;
+  }
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  max-height: 220px;
+  overflow-y: auto;
+
+  li + li {
+    border-top: 1px solid var(--color-border);
+  }
+
+  button {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    width: 100%;
+    padding: $space-2 $space-3;
+    text-align: left;
+    @include transition(background-color);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--color-surface-2);
+    }
+
+    span {
+      font-size: $font-xs;
+      color: var(--color-text-muted);
+    }
+  }
+}
+
+.coords {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-2;
+  font-size: $font-xs;
+  color: var(--color-text-muted);
+}
+
+.catPick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
